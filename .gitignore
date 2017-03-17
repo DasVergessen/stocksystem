@@ -1,5 +1,17 @@
 *.class
-
+*.iml
+*.ipr
+*.iws
+.idea/
+target/
+/bin/
+/logs/
+/.settings/
+.classpath
+.project
+.tern-project
+deployments/
+.DS_Store
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
