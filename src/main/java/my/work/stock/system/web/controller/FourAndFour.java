@@ -9,11 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-public class HomeController {
+public class FourAndFour {
 
-    @RequestMapping(value = "/sys", method = RequestMethod.GET)
-    public ModelAndView home() {
+    @RequestMapping(value = "/404", method = RequestMethod.GET)
+    public ModelAndView four04() {
         Map<String, String> model = new HashMap<>();
-        return new ModelAndView("home", model);
+        return new ModelAndView("404", model);
     }
 }
