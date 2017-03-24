@@ -1,0 +1,70 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="menu(first,second)">
+    <aside class="main-sidebar">
+        <section class="sidebar">
+
+            <ul class="sidebar-menu">
+                <li class="header">菜单</li>
+
+                <li th:class="${first}=='basedata'?'active treeview':'treeview'">
+                    <a href="#">
+                        <i class="fa fa-laptop"></i>
+                        <span>基础数据管理</span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="#"><i class="fa fa-circle-o"></i> 供应商信息</a></li>
+                        <li><a href="#"><i class="fa fa-circle-o"></i> 内部部门信息</a></li>
+                        <li><a href="#"><i class="fa fa-circle-o"></i> 计算机耗材类别信息</a></li>
+                        <li><a href="#"><i class="fa fa-circle-o"></i> 计算机耗材信息</a></li>
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-edit"></i> <span>入库管理</span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="#"><i class="fa fa-circle-o"></i> 采购入库</a></li>
+                        <li><a href="#"><i class="fa fa-circle-o"></i> 入库统计</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-table"></i> <span>出库管理</span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="#"><i class="fa fa-circle-o"></i> 领用出库</a></li>
+                        <li><a href="#"><i class="fa fa-circle-o"></i> 出库统计</a></li>
+                    </ul>
+                </li>
+                <li th:class="${first}=='system'?'active treeview':'treeview'">
+                    <a href="#">
+                        <i class="fa fa-dashboard"></i> <span>系统管理</span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li th:class="${second}=='resetpassword'?'active':''">
+                            <a href="/resetpassword"><i class="fa fa-circle-o"></i>密码重置</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+</div>
+</body>
+</html>

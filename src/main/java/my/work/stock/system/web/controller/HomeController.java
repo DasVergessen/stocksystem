@@ -16,4 +16,10 @@ public class HomeController {
         Map<String, String> model = new HashMap<>();
         return new ModelAndView("home", model);
     }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ModelAndView index() {
+        Map<String, String> model = new HashMap<>();
+        return new ModelAndView("home", model);
+    }
 }

@@ -27,8 +27,6 @@ public class MyShiroRealm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        logger.info("getCredentials:{}", authenticationToken.getCredentials());
-        logger.info("getPrincipal:{}", authenticationToken.getPrincipal());
         String userName = (String) authenticationToken.getPrincipal();
         UserInfo userInfo = userInfoService.findByUserName(userName);
         if (userInfo == null) {
