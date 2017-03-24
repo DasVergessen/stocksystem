@@ -1,5 +1,7 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,7 +26,7 @@
     <!-- /.login-logo -->
     <div class="login-box-body">
         <p class="login-box-msg">登录</p>
-
+        <label th:text="${message}" class="col-xs-offset-4 control-label">Input with warning</label>
         <form action="/login" method="post">
             <div class="form-group has-feedback">
                 <input name="username" type="text" class="form-control" placeholder="用户名">
@@ -35,8 +37,8 @@
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
             <div class="row">
-                <div class="col-xs-8">
-                    <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                <div class="col-xs-offset-4 col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">登录</button>
                 </div>
                 <!-- /.col -->
             </div>

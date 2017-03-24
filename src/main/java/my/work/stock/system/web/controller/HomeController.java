@@ -11,7 +11,7 @@ import java.util.Map;
 @Controller
 public class HomeController {
 
-    @RequestMapping(value = "/sys", method = RequestMethod.GET)
+    @RequestMapping(value = "/home", method = RequestMethod.GET)
     public ModelAndView home() {
         Map<String, String> model = new HashMap<>();
         return new ModelAndView("home", model);
