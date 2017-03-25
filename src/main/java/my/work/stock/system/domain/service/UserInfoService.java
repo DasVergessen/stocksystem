@@ -13,4 +13,8 @@ public class UserInfoService {
     public UserInfo findByUserName(String userName) {
         return userInfoRepository.findByUserName(userName);
     }
+
+    public void save(UserInfo userInfo) {
+        userInfoRepository.save(userInfo);
+    }
 }
