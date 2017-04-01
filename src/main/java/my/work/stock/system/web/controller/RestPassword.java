@@ -2,6 +2,7 @@ package my.work.stock.system.web.controller;
 
 import my.work.stock.system.domain.entity.UserInfo;
 import my.work.stock.system.domain.service.UserInfoService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -23,13 +24,13 @@ public class RestPassword {
     @Autowired
     private UserInfoService userInfoService;
 
-    @RequestMapping(value = "/resetpassword", method = RequestMethod.GET)
+    @RequestMapping(value = "/system/resetpassword", method = RequestMethod.GET)
     public ModelAndView get() {
         Map<String, String> model = new HashMap<>();
-        return new ModelAndView("resetpassword", model);
+        return new ModelAndView("system/resetpassword", model);
     }
 
-    @RequestMapping(value = "/resetpassword", method = RequestMethod.POST)
+    @RequestMapping(value = "/system/resetpassword", method = RequestMethod.POST)
     public ModelAndView post(@RequestParam String password, @RequestParam String newPassword, @RequestParam String rePassword) {
         Subject subject = SecurityUtils.getSubject();
         UserInfo temp = (UserInfo) subject.getPrincipal();
@@ -37,12 +38,16 @@ public class RestPassword {
         logger.info("password:{}", temp.getPassword());
         UserInfo userInfo = userInfoService.findByUserName(temp.getUserName());
         Map<String, String> model = new HashMap<>();
-        if (userInfo.getPassword().equals(password)) {
-            userInfo.setPassword(newPassword);
-            userInfoService.save(userInfo);
+        if (StringUtils.equals(userInfo.getPassword(), password)) {
+            if (StringUtils.equals(newPassword, rePassword)) {
+                userInfo.setPassword(newPassword);
+                userInfoService.save(userInfo);
+            } else {
+                model.put("wrongPassword", "两次密码输入不一致!");
+            }
         } else {
-            model.put("wrongPassword", "true");
+            model.put("wrongPassword", "旧密码不正确!");
         }
-        return new ModelAndView("resetpassword", model);
+        return new ModelAndView("system/resetpassword", model);
     }
 }
