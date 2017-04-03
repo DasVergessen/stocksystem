@@ -2,7 +2,7 @@
     <computer_materials_info computer_materials_id="1" computer_materials_name="鼠标"
                              computer_materials_specifications="双飞燕鼠标xxx" computer_materials_unit="个" computer_materials_category_category_id="1"/>
     <computer_materials_info computer_materials_id="2" computer_materials_name="键盘"
-                             computer_materials_specifications="双飞燕键盘xxx" computer_materials_unit="个" computer_materials_category_category_id="1"/>
+                             computer_materials_specifications="双飞燕键盘xxx" computer_materials_unit="个" computer_materials_category_category_id="2"/>
     <computer_materials_info computer_materials_id="3" computer_materials_name="显示器"
                              computer_materials_specifications="Dell显示27寸" computer_materials_unit="台" computer_materials_category_category_id="3"/>
 </dataset>

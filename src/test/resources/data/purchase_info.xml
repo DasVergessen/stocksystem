@@ -1,0 +1,4 @@
+<dataset>
+    <purchase_info purchase_id="1" purchase_date="20170403" purchase_quantity="2" purchase_price="2000" supplier_info_supplier_id="1"
+                   computer_materials_info_computer_materials_id="1" computer_materials_category_category_id="1"/>
+</dataset>
