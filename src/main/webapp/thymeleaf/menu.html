@@ -26,7 +26,9 @@
                         <li th:class="${second}=='computermaterialscategory'?'active':''">
                             <a href="/computerMaterialsCategory"><i class="fa fa-circle-o"></i> 计算机耗材类别信息</a>
                         </li>
-                        <li><a href="#"><i class="fa fa-circle-o"></i> 计算机耗材信息</a></li>
+                        <li th:class="${second}=='computermaterialsinfo'?'active':''">
+                            <a href="/computerMaterialsInfo"><i class="fa fa-circle-o"></i> 计算机耗材信息</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="treeview">

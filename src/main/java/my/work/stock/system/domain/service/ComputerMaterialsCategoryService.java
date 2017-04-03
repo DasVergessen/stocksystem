@@ -26,7 +26,7 @@ public class ComputerMaterialsCategoryService {
         return computerMaterialsCategoryRepository.findAll(specification, pageable);
     }
 
-    public List<ComputerMaterialsCategory> findAllInnerDepartmentInfo() {
+    public List<ComputerMaterialsCategory> findAllComputerMaterialsCategory() {
         return (List<ComputerMaterialsCategory>) computerMaterialsCategoryRepository.findAll();
     }
 
