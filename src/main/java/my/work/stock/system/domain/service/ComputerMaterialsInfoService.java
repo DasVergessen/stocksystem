@@ -1,5 +1,6 @@
 package my.work.stock.system.domain.service;
 
+import my.work.stock.system.domain.entity.ComputerMaterialsCategory;
 import my.work.stock.system.domain.entity.ComputerMaterialsInfo;
 import my.work.stock.system.domain.repository.ComputerMaterialsInfoRepository;
 import my.work.stock.system.web.view.SearchComputerMaterialsInfo;
@@ -37,7 +38,9 @@ public class ComputerMaterialsInfoService {
                 and.add(criteriaBuilder.equal(root.get("computerMaterialsId").as(Integer.class), searchComputerMaterialsInfo.getComputerMaterialsId()));
             }
             if (searchComputerMaterialsInfo.getCategoryId() != null) {
-                and.add(criteriaBuilder.equal(root.get("computerMaterialsCategoryCategoryId").as(Integer.class), searchComputerMaterialsInfo.getCategoryId()));
+                ComputerMaterialsCategory computerMaterialsCategory = new ComputerMaterialsCategory();
+                computerMaterialsCategory.setCategoryId(searchComputerMaterialsInfo.getCategoryId());
+                and.add(criteriaBuilder.equal(root.get("computerMaterialsCategory").as(ComputerMaterialsCategory.class), computerMaterialsCategory));
             }
             if (StringUtils.isNotEmpty(searchComputerMaterialsInfo.getComputerMaterialsName())) {
                 and.add(criteriaBuilder.like(root.get("computerMaterialsName").as(String.class), "%" + searchComputerMaterialsInfo.getComputerMaterialsName() + "%"));
