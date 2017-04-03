@@ -17,11 +17,15 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li th:class="${second}=='supplierinfo'?'active':''"><a href="/supplierInfo"><i
-                                class="fa fa-circle-o"></i> 供应商信息</a></li>
-                        <li th:class="${second}=='innerdepartmentinfo'?'active':''"><a href="/innerDepartmentInfo"><i
-                                class="fa fa-circle-o"></i> 内部部门信息</a></li>
-                        <li><a href="#"><i class="fa fa-circle-o"></i> 计算机耗材类别信息</a></li>
+                        <li th:class="${second}=='supplierinfo'?'active':''">
+                            <a href="/supplierInfo"><i class="fa fa-circle-o"></i> 供应商信息</a>
+                        </li>
+                        <li th:class="${second}=='innerdepartmentinfo'?'active':''">
+                            <a href="/innerDepartmentInfo"><i class="fa fa-circle-o"></i> 内部部门信息</a>
+                        </li>
+                        <li th:class="${second}=='computermaterialscategory'?'active':''">
+                            <a href="/computerMaterialsCategory"><i class="fa fa-circle-o"></i> 计算机耗材类别信息</a>
+                        </li>
                         <li><a href="#"><i class="fa fa-circle-o"></i> 计算机耗材信息</a></li>
                     </ul>
                 </li>
