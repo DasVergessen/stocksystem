@@ -1,0 +1,5 @@
+<dataset>
+    <receive_info receive_id="1" receive_date="20170403" receive_quantity="3"
+                  computer_materials_category_category_id="1" receive_price="4000"
+                  computer_materials_info_computer_materials_id="1" inner_department_info_department_id="1"/>
+</dataset>

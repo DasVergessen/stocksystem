@@ -1,0 +1,4 @@
+<dataset>
+    <inner_department_info department_id="1" department_name="销售部" department_function="负责电话销售"
+                           mobile_of_property_admin="15211222211" memo="赚钱"/>
+</dataset>

@@ -3,8 +3,8 @@ package my.work.stock.system.domain.service;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import my.work.stock.system.Application;
-import my.work.stock.system.domain.entity.PurchaseInfo;
-import my.work.stock.system.web.view.SearchPurchaseInfo;
+import my.work.stock.system.domain.entity.ReceiveInfo;
+import my.work.stock.system.web.view.SearchReceiveInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,21 +22,22 @@ import static org.hamcrest.core.Is.is;
 @SpringApplicationConfiguration(classes = Application.class)
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class, DbUnitTestExecutionListener.class})
-@DatabaseSetup({"/data/computer_materials_category.xml", "/data/computer_materials_info.xml", "/data/inner_department_info.xml", "/data/supplier_info.xml", "/data/purchase_info.xml", "/data/receive_info.xml"})
-public class PurchaseInfoServiceTest {
+@DatabaseSetup({"/data/computer_materials_category.xml", "/data/computer_materials_info.xml", "/data/inner_department_info.xml", "/data/supplier_info.xml", "/data/receive_info.xml", "/data/purchase_info.xml"})
+public class ReceiveInfoServiceTest {
 
     @Autowired
-    private PurchaseInfoService purchaseInfoService;
+    private ReceiveInfoService receiveInfoService;
 
     @Test
-    public void testSearchSupplierInfo() throws Exception {
-        SearchPurchaseInfo searchSupplierInfo = new SearchPurchaseInfo();
-        searchSupplierInfo.setPageSize(10);
-        searchSupplierInfo.setPageNumber(0);
-        searchSupplierInfo.setSupplierId(1);
-        Page<PurchaseInfo> purchaseInfos = purchaseInfoService.searchPurchaseInfo(searchSupplierInfo);
-        purchaseInfos.forEach(purchaseInfo -> {
-            assertThat(purchaseInfo.getSupplierInfo().getSupplierContacts(), is("王哈哈"));
+    public void testSearchReceiveInfo() throws Exception {
+
+        SearchReceiveInfo searchReceiveInfo = new SearchReceiveInfo();
+        searchReceiveInfo.setDepartmentId(1);
+        searchReceiveInfo.setPageNumber(0);
+        searchReceiveInfo.setPageSize(10);
+        Page<ReceiveInfo> receiveInfos = receiveInfoService.searchReceiveInfo(searchReceiveInfo);
+        receiveInfos.forEach(receiveInfo -> {
+            assertThat(receiveInfo.getInnerDepartmentInfo().getDepartmentName(), is("销售部"));
         });
     }
 }

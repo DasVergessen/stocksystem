@@ -23,13 +23,13 @@ public class PurchaseInfoService {
     @Autowired
     private PurchaseInfoRepository purchaseInfoRepository;
 
-    public Page<PurchaseInfo> searchSupplierInfo(SearchPurchaseInfo searchPurchaseInfo) {
+    public Page<PurchaseInfo> searchPurchaseInfo(SearchPurchaseInfo searchPurchaseInfo) {
         Specification<PurchaseInfo> specification = getWhereClause(searchPurchaseInfo);
         PageRequest pageable = new PageRequest(searchPurchaseInfo.getPageNumber(), searchPurchaseInfo.getPageSize(), new Sort(Sort.Direction.DESC, "purchaseId"));
         return purchaseInfoRepository.findAll(specification, pageable);
     }
 
-    public List<PurchaseInfo> findAllSupplierInfo() {
+    public List<PurchaseInfo> findAllPurchaseInfo() {
         return (List<PurchaseInfo>) purchaseInfoRepository.findAll();
     }
 
@@ -37,7 +37,7 @@ public class PurchaseInfoService {
         return (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> and = new ArrayList<>();
             if (StringUtils.isNotEmpty(searchPurchaseInfo.getPurchaseDate())) {
-                and.add(criteriaBuilder.like(root.get("purchaseDate").as(String.class), "%" + searchPurchaseInfo.getPurchaseDate() + "%"));
+                and.add(criteriaBuilder.equal(root.get("purchaseDate").as(String.class), searchPurchaseInfo.getPurchaseDate()));
             }
             Integer supplierId = searchPurchaseInfo.getSupplierId();
             if (supplierId != null) {
