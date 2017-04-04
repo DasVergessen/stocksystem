@@ -18,20 +18,20 @@
                     </a>
                     <ul class="treeview-menu">
                         <li th:class="${second}=='supplierinfo'?'active':''">
-                            <a href="/supplierInfo"><i class="fa fa-circle-o"></i> 供应商信息</a>
+                            <a href="/supplierInfo"><i class="fa fa-circle-o"> 供应商信息</i></a>
                         </li>
                         <li th:class="${second}=='innerdepartmentinfo'?'active':''">
-                            <a href="/innerDepartmentInfo"><i class="fa fa-circle-o"></i> 内部部门信息</a>
+                            <a href="/innerDepartmentInfo"><i class="fa fa-circle-o"> 内部部门信息</i></a>
                         </li>
                         <li th:class="${second}=='computermaterialscategory'?'active':''">
-                            <a href="/computerMaterialsCategory"><i class="fa fa-circle-o"></i> 计算机耗材类别信息</a>
+                            <a href="/computerMaterialsCategory"><i class="fa fa-circle-o"> 计算机耗材类别信息</i></a>
                         </li>
                         <li th:class="${second}=='computermaterialsinfo'?'active':''">
-                            <a href="/computerMaterialsInfo"><i class="fa fa-circle-o"></i> 计算机耗材信息</a>
+                            <a href="/computerMaterialsInfo"><i class="fa fa-circle-o"> 计算机耗材信息</i></a>
                         </li>
                     </ul>
                 </li>
-                <li class="treeview">
+                <li th:class="${first}=='purchaseinfo'?'active treeview':'treeview'">
                     <a href="#">
                         <i class="glyphicon glyphicon-log-in"></i> <span>入库管理</span>
                         <span class="pull-right-container">
@@ -39,21 +39,28 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#"><i class="fa fa-circle-o"></i> 采购入库</a></li>
-                        <li><a href="#"><i class="fa fa-circle-o"></i> 入库统计</a>
+                        <li th:class="${second}=='list'?'active':''">
+                            <a href="/purchaseInfo/list"><i class="fa fa-circle-o"> 采购入库</i></a>
+                        </li>
+                        <li th:class="${second}=='report'?'active':''">
+                            <a href="/purchaseInfo/report"><i class="fa fa-circle-o"> 入库统计</i></a>
                         </li>
                     </ul>
                 </li>
-                <li class="treeview">
+                <li th:class="${first}=='receiveinfo'?'active treeview':'treeview'">
                     <a href="#">
-                        <i class="glyphicon glyphicon-log-out"></i> <span>出库管理</span>
+                        <i class="glyphicon glyphicon-log-out"></i><span>出库管理</span>
                         <span class="pull-right-container">
                           <i class="fa fa-angle-left pull-right"></i>
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#"><i class="fa fa-circle-o"></i> 领用出库</a></li>
-                        <li><a href="#"><i class="fa fa-circle-o"></i> 出库统计</a></li>
+                        <li th:class="${second}=='list'?'active':''">
+                            <a href="/receiveInfo/list"><i class="fa fa-circle-o"> 领用出库</i></a>
+                        </li>
+                        <li th:class="${second}=='report'?'active':''">
+                            <a href="/receiveInfo/report"><i class="fa fa-circle-o"> 出库统计</i></a>
+                        </li>
                     </ul>
                 </li>
                 <li th:class="${first}=='system'?'active treeview':'treeview'">
@@ -65,7 +72,7 @@
                     </a>
                     <ul class="treeview-menu">
                         <li th:class="${second}=='resetpassword'?'active':''">
-                            <a href="/system/resetpassword"><i class="fa fa-circle-o"></i>密码重置</a>
+                            <a href="/system/resetpassword"><i class="fa fa-circle-o"> 密码重置</i></a>
                         </li>
                     </ul>
                 </li>
