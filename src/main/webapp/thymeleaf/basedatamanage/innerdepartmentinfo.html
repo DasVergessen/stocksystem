@@ -56,8 +56,8 @@
                                    placeholder="资产管理员电话"/>
                         </div>
                         <div class="col-md-2 form-group" style="margin-top: 25px">
-                            <button type="button" ng-click="search()" class="btn btn-success"><i
-                                    class="fa fa-search"></i> 查询
+                            <button type="button" ng-click="search()" class="btn btn-success">
+                                <i class="fa fa-search"> 查询</i>
                             </button>
                         </div>
                     </form>
@@ -70,8 +70,8 @@
 
                         <div class="box-tools">
                             <div class="input-group">
-                                <button class="btn btn-default pull-right" ng-click="export()">导出Excel</button>
-                                <button class="btn btn-default" style="margin-right: 10px" ng-click="export()">新增</button>
+                                <button class="btn btn-info btn-sm pull-right" ng-click="export()"><i class="fa fa-file-excel-o"> 导出</i></button>
+                                <button class="btn btn-info btn-sm" style="margin-right: 10px" ng-click="export()"><i class="fa fa-plus"> 新增</i></button>
                             </div>
                         </div>
                     </div>
@@ -102,8 +102,8 @@
                                     {{innerDepartmentInfo.memo}}
                                 </td>
                                 <td>
-                                    <button class="btn btn-default" ng-click="export()">修改</button>
-                                    <button class="btn btn-default" style="margin-right: 10px" ng-click="export()">删除</button>
+                                    <button class="btn btn-info btn-sm" ng-click="export()"><i class="fa fa-edit"> 修改</i></button>
+                                    <button class="btn btn-info btn-sm" style="margin-right: 10px" ng-click="export()"><i class="fa fa-remove"> 删除</i></button>
                                 </td>
                             </tr>
                         </table>
