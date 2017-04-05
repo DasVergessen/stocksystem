@@ -31,7 +31,7 @@
         </section>
 
         <!-- Main content -->
-        <section id="reset" class="content">
+        <section id="list" class="content">
             <div class="box box-widget">
                 <div class="box-body">
                     <form class="">
@@ -61,7 +61,7 @@
                                    placeholder="供应商联系人"/>
                         </div>
                         <div class="col-md-2 form-group" style="margin-top: 25px">
-                            <button type="button" ng-click="search()" class="btn btn-success">
+                            <button type="button" v-on:click="search" class="btn btn-success">
                                 <i class="fa fa-search"> 查询</i>
                             </button>
                         </div>
@@ -75,8 +75,10 @@
 
                         <div class="box-tools">
                             <div class="input-group">
-                                <button class="btn btn-info btn-sm pull-right" ng-click="export()"><i class="fa fa-file-excel-o"> 导出</i></button>
-                                <button class="btn btn-info btn-sm" style="margin-right: 10px" ng-click="export()"><i class="fa fa-plus"> 新增</i></button>
+                                <button class="btn btn-info btn-sm pull-right" ng-click="export()"><i
+                                        class="fa fa-file-excel-o"> 导出</i></button>
+                                <button class="btn btn-info btn-sm" style="margin-right: 10px" v-on:click="insert"><i
+                                        class="fa fa-plus"> 新增</i></button>
                             </div>
                         </div>
                     </div>
@@ -111,8 +113,12 @@
                                     {{supplierInfo.supplierRemark}}
                                 </td>
                                 <td>
-                                    <button class="btn btn-info btn-sm" ng-click="export()"><i class="fa fa-edit"> 修改</i></button>
-                                    <button class="btn btn-info btn-sm" style="margin-right: 10px" ng-click="export()"><i class="fa fa-remove"> 删除</i></button>
+                                    <button class="btn btn-info btn-sm" v-on:click="edit(supplierInfo)"><i
+                                            class="fa fa-edit">
+                                        修改</i></button>
+                                    <button class="btn btn-info btn-sm" v-on:click="remove(supplierInfo)"
+                                            style="margin-right: 10px">
+                                        <i class="fa fa-remove"> 删除</i></button>
                                 </td>
                             </tr>
                         </table>
@@ -129,6 +135,51 @@
                 </div>
             </div>
         </section>
+        <!-- Modal -->
+        <div class="modal fade" id="insertOrEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">新增供应商</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="supplierName" class="control-label">供应商名称:</label>
+                                <input type="text" required id="supplierName" class="form-control"
+                                       v-model="supplierInfo.supplierName">
+                            </div>
+                            <div class="form-group">
+                                <label for="supplierAddress" class="control-label">供应商地址:</label>
+                                <input type="text" id="supplierAddress" class="form-control"
+                                       v-model="supplierInfo.supplierAddress">
+                            </div>
+                            <div class="form-group">
+                                <label for="supplierPhoneNumber" class="control-label">供应商电话:</label>
+                                <input type="number" id="supplierPhoneNumber" class="form-control"
+                                       v-model="supplierInfo.supplierPhoneNumber">
+                            </div>
+                            <div class="form-group">
+                                <label for="supplierContacts" class="control-label">供应商联系人:</label>
+                                <input type="text" id="supplierContacts" class="form-control"
+                                       v-model="supplierInfo.supplierContacts">
+                            </div>
+                            <div class="form-group">
+                                <label for="supplierRemark" class="control-label">备注:</label>
+                                <textarea id="supplierRemark" class="form-control"
+                                          v-model="supplierInfo.supplierRemark"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" v-on:click="save" class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- /.content -->
     </div>
     <div th:replace="footer :: footer"></div>
@@ -155,18 +206,53 @@
 <script src="/js/vue-resource.min.js"></script>
 
 <script>
-    var reset = new Vue({
-        el: '#reset',
+    var list = new Vue({
+        el: '#list',
         data: {
-            searchSupplierInfo: {},
-            supplierInfos: [{supplierId:1111}]
+            searchSupplierInfo: {pageNumber: 0, pageSize: 10},
+            supplierInfos: [{supplierId: 1111}]
         },
-        method: {
+        methods: {
             search: function () {
-
+                Vue.http.post('/supplierInfo/search', this.searchSupplierInfo).then(function (reps) {
+                    return reps.json();
+                }).then(function (resp) {
+//                    console.log(resp);
+                    list.supplierInfos = resp.content;
+                });
             },
             export: function () {
 
+            },
+            remove: function (supplierInfo) {
+                Vue.http.post('/supplierInfo/delete', supplierInfo).then(function (reps) {
+                    list.search();
+                });
+            },
+            edit: function (supplierInfo) {
+                insertOrEdit.supplierInfo = supplierInfo;
+                $('#insertOrEdit').modal();
+            },
+            insert: function () {
+                insertOrEdit.supplierInfo = {};//新增先new一个新的对象;
+                $('#insertOrEdit').modal();
+            }
+        }
+    });
+    list.search();
+    var insertOrEdit = new Vue({
+        el: '#insertOrEdit',
+        data: {
+            supplierInfo: {}
+        },
+        methods: {
+            save: function () {
+                Vue.http.post('/supplierInfo/save', this.supplierInfo).then(function (reps) {
+                    list.search();
+                }, function (error) {
+                    console.error(error);
+                });
+                $('#insertOrEdit').modal('hide');
             }
         }
     })

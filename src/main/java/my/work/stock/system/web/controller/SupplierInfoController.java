@@ -5,6 +5,7 @@ import my.work.stock.system.domain.service.SupplierInfoService;
 import my.work.stock.system.web.view.SearchSupplierInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,13 +21,23 @@ public class SupplierInfoController {
     private SupplierInfoService supplierInfoService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ModelAndView get(){
+    public ModelAndView get() {
         Map<String, String> model = new HashMap<>();
         return new ModelAndView("basedatamanage/supplierinfo", model);
     }
 
-    @RequestMapping(value = "search", method = RequestMethod.GET)
-    public Page<SupplierInfo> page(SearchSupplierInfo searchSupplierInfo) {
+    @RequestMapping(value = "save", method = RequestMethod.POST)
+    public void save(@RequestBody SupplierInfo supplierInfo) {
+        supplierInfoService.save(supplierInfo);
+    }
+
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    public void delete(@RequestBody SupplierInfo supplierInfo) {
+        supplierInfoService.delete(supplierInfo);
+    }
+
+    @RequestMapping(value = "search", method = RequestMethod.POST)
+    public Page<SupplierInfo> page(@RequestBody SearchSupplierInfo searchSupplierInfo) {
         return supplierInfoService.searchSupplierInfo(searchSupplierInfo);
     }
 

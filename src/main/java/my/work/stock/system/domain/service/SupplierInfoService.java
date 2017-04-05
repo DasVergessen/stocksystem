@@ -51,4 +51,12 @@ public class SupplierInfoService {
             return criteriaQuery.where(criteriaBuilder.and(and.toArray(new Predicate[0]))).getRestriction();
         };
     }
+
+    public void save(SupplierInfo supplierInfo) {
+        supplierInfoRepository.save(supplierInfo);
+    }
+
+    public void delete(SupplierInfo supplierInfo) {
+        supplierInfoRepository.delete(supplierInfo);
+    }
 }
