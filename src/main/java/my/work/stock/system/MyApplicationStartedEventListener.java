@@ -10,7 +10,7 @@ public class MyApplicationStartedEventListener implements ApplicationListener<Co
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         UserInfoService userInfoService = contextRefreshedEvent.getApplicationContext().getBean(UserInfoService.class);
         UserInfo admin = userInfoService.findByUserName("admin");
-        if (admin == null) {
+        if (admin == null) {//初始化用户密码
             UserInfo userInfo = new UserInfo();
             userInfo.setUserName("admin");
             userInfo.setPassword("123456");
