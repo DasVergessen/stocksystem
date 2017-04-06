@@ -4,6 +4,8 @@ import my.work.stock.system.domain.entity.InnerDepartmentInfo;
 import my.work.stock.system.domain.repository.InnerDepartmentInfoRepository;
 import my.work.stock.system.web.view.SearchInnerDepartmentInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +19,8 @@ import java.util.List;
 
 @Service
 public class InnerDepartmentInfoService {
+    private static final Logger logger = LoggerFactory.getLogger(InnerDepartmentInfoService.class);
+
     @Autowired
     private InnerDepartmentInfoRepository innerDepartmentInfoRepository;
 
@@ -47,5 +51,13 @@ public class InnerDepartmentInfoService {
             }
             return criteriaQuery.where(criteriaBuilder.and(and.toArray(new Predicate[0]))).getRestriction();
         };
+    }
+
+    public void save(InnerDepartmentInfo innerDepartmentInfo) {
+        innerDepartmentInfoRepository.save(innerDepartmentInfo);
+    }
+
+    public void delete(InnerDepartmentInfo innerDepartmentInfo) {
+        innerDepartmentInfoRepository.delete(innerDepartmentInfo);
     }
 }

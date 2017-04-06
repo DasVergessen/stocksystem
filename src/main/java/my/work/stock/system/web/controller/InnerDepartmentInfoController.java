@@ -5,6 +5,7 @@ import my.work.stock.system.domain.service.InnerDepartmentInfoService;
 import my.work.stock.system.web.view.SearchInnerDepartmentInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,8 +26,18 @@ public class InnerDepartmentInfoController {
         return new ModelAndView("basedatamanage/innerdepartmentinfo", model);
     }
 
-    @RequestMapping(value = "search", method = RequestMethod.GET)
-    public Page<InnerDepartmentInfo> page(SearchInnerDepartmentInfo searchInnerDepartmentInfo) {
+    @RequestMapping(value = "save", method = RequestMethod.POST)
+    public void save(@RequestBody InnerDepartmentInfo innerDepartmentInfo) {
+        innerDepartmentInfoService.save(innerDepartmentInfo);
+    }
+
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    public void delete(@RequestBody InnerDepartmentInfo innerDepartmentInfo) {
+        innerDepartmentInfoService.delete(innerDepartmentInfo);
+    }
+
+    @RequestMapping(value = "search", method = RequestMethod.POST)
+    public Page<InnerDepartmentInfo> page(@RequestBody SearchInnerDepartmentInfo searchInnerDepartmentInfo) {
         return innerDepartmentInfoService.searchInnerDepartmentInfo(searchInnerDepartmentInfo);
     }
 

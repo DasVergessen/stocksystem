@@ -31,7 +31,7 @@
         </section>
 
         <!-- Main content -->
-        <section id="reset" class="content">
+        <section id="list" class="content">
             <div class="box box-widget">
                 <div class="box-body">
                     <form class="">
@@ -47,16 +47,18 @@
                         </div>
                         <div class="col-md-2 form-group">
                             <label class="control-label">部门职能:</label>
-                            <input type="text" v-model="searchInnerDepartmentInfo.departmentFunction" class="form-control"
+                            <input type="text" v-model="searchInnerDepartmentInfo.departmentFunction"
+                                   class="form-control"
                                    placeholder="部门职能"/>
                         </div>
                         <div class="col-md-2 form-group">
                             <label class="control-label">资产管理员电话:</label>
-                            <input type="text" v-model="searchInnerDepartmentInfo.mobileOfPropertyAdmin" class="form-control"
+                            <input type="text" v-model="searchInnerDepartmentInfo.mobileOfPropertyAdmin"
+                                   class="form-control"
                                    placeholder="资产管理员电话"/>
                         </div>
                         <div class="col-md-2 form-group" style="margin-top: 25px">
-                            <button type="button" ng-click="search()" class="btn btn-success">
+                            <button type="button" v-on:click="search" class="btn btn-success">
                                 <i class="fa fa-search"> 查询</i>
                             </button>
                         </div>
@@ -70,8 +72,10 @@
 
                         <div class="box-tools">
                             <div class="input-group">
-                                <button class="btn btn-info btn-sm pull-right" ng-click="export()"><i class="fa fa-file-excel-o"> 导出</i></button>
-                                <button class="btn btn-info btn-sm" style="margin-right: 10px" ng-click="export()"><i class="fa fa-plus"> 新增</i></button>
+                                <button class="btn btn-info btn-sm pull-right" ng-click="export()"><i
+                                        class="fa fa-file-excel-o"> 导出</i></button>
+                                <button class="btn btn-info btn-sm" style="margin-right: 10px" v-on:click="insert"><i
+                                        class="fa fa-plus"> 新增</i></button>
                             </div>
                         </div>
                     </div>
@@ -102,8 +106,12 @@
                                     {{innerDepartmentInfo.memo}}
                                 </td>
                                 <td>
-                                    <button class="btn btn-info btn-sm" ng-click="export()"><i class="fa fa-edit"> 修改</i></button>
-                                    <button class="btn btn-info btn-sm" style="margin-right: 10px" ng-click="export()"><i class="fa fa-remove"> 删除</i></button>
+                                    <button class="btn btn-info btn-sm" v-on:click="edit(innerDepartmentInfo)">
+                                        <i class="fa fa-edit"> 修改</i>
+                                    </button>
+                                    <button class="btn btn-info btn-sm" style="margin-right: 10px" v-on:click="remove(innerDepartmentInfo)">
+                                        <i class="fa fa-remove"> 删除</i>
+                                    </button>
                                 </td>
                             </tr>
                         </table>
@@ -121,6 +129,47 @@
             </div>
         </section>
         <!-- /.content -->
+        <!-- Modal -->
+        <div class="modal fade" id="insertOrEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 v-if="innerDepartmentInfo.departmentId" class="modal-title" id="myModalLabel">编辑部门</h4>
+                        <h4 v-else class="modal-title" id="myModalLabel">新增部门</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="departmentName" class="control-label">部门名称:</label>
+                                <input type="text" required id="departmentName" class="form-control"
+                                       v-model="innerDepartmentInfo.departmentName">
+                            </div>
+                            <div class="form-group">
+                                <label for="departmentFunction" class="control-label">部门职能:</label>
+                                <input type="text" id="departmentFunction" class="form-control"
+                                       v-model="innerDepartmentInfo.departmentFunction">
+                            </div>
+                            <div class="form-group">
+                                <label for="mobileOfPropertyAdmin" class="control-label">资产管理员电话:</label>
+                                <input type="number" id="mobileOfPropertyAdmin" class="form-control"
+                                       v-model="innerDepartmentInfo.mobileOfPropertyAdmin">
+                            </div>
+                            <div class="form-group">
+                                <label for="memo" class="control-label">备注:</label>
+                                <textarea id="memo" class="form-control"
+                                          v-model="innerDepartmentInfo.memo"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" v-on:click="save" class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div th:replace="footer :: footer"></div>
 </div>
@@ -146,18 +195,53 @@
 <script src="/js/vue-resource.min.js"></script>
 
 <script>
-    var reset = new Vue({
-        el: '#reset',
+    var list = new Vue({
+        el: '#list',
         data: {
-            searchInnerDepartmentInfo: {},
-            innerDepartmentInfos: [{departmentId:1111}]
+            searchInnerDepartmentInfo: {pageNumber: 0, pageSize: 10},
+            innerDepartmentInfos: [{departmentId: 1111}]
         },
-        method: {
+        methods: {
             search: function () {
-
+                Vue.http.post('/innerDepartmentInfo/search', this.searchInnerDepartmentInfo).then(function (reps) {
+                    return reps.json();
+                }).then(function (resp) {
+                    console.log(resp);
+                    list.innerDepartmentInfos = resp.content;
+                });
             },
             export: function () {
 
+            },
+            remove: function (innerDepartmentInfo) {
+                Vue.http.post('/innerDepartmentInfo/delete', innerDepartmentInfo).then(function (reps) {
+                    list.search();
+                });
+            },
+            edit: function (innerDepartmentInfo) {
+                insertOrEdit.innerDepartmentInfo = innerDepartmentInfo;
+                $('#insertOrEdit').modal();
+            },
+            insert: function () {
+                insertOrEdit.innerDepartmentInfo = {};//新增先new一个新的对象;
+                $('#insertOrEdit').modal();
+            }
+        }
+    });
+    list.search();
+    var insertOrEdit = new Vue({
+        el: '#insertOrEdit',
+        data: {
+            innerDepartmentInfo: {}
+        },
+        methods: {
+            save: function () {
+                Vue.http.post('/innerDepartmentInfo/save', this.innerDepartmentInfo).then(function (reps) {
+                    list.search();
+                }, function (error) {
+                    console.error(error);
+                });
+                $('#insertOrEdit').modal('hide');
             }
         }
     })
