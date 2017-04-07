@@ -31,7 +31,7 @@
         </section>
 
         <!-- Main content -->
-        <section id="reset" class="content">
+        <section id="list" class="content">
             <div class="box box-widget">
                 <div class="box-body">
                     <form class="">
@@ -42,11 +42,12 @@
                         </div>
                         <div class="col-md-3 form-group">
                             <label class="control-label">类别名称:</label>
-                            <input type="text" v-model="searchComputerMaterialsCategory.categoryName" class="form-control"
+                            <input type="text" v-model="searchComputerMaterialsCategory.categoryName"
+                                   class="form-control"
                                    placeholder="类别名称"/>
                         </div>
                         <div class="col-md-3 form-group" style="margin-top: 25px">
-                            <button type="button" ng-click="search()" class="btn btn-success">
+                            <button type="button" v-on:click="search" class="btn btn-success">
                                 <i class="fa fa-search"> 查询</i>
                             </button>
                         </div>
@@ -60,8 +61,10 @@
 
                         <div class="box-tools">
                             <div class="input-group">
-                                <button class="btn btn-info btn-sm pull-right" ng-click="export()"><i class="fa fa-file-excel-o"> 导出</i></button>
-                                <button class="btn btn-info btn-sm" style="margin-right: 10px" ng-click="export()"><i class="fa fa-plus"> 新增</i></button>
+                                <button class="btn btn-info btn-sm pull-right" ng-click="export()"><i
+                                        class="fa fa-file-excel-o"> 导出</i></button>
+                                <button class="btn btn-info btn-sm" style="margin-right: 10px" v-on:click="insert"><i
+                                        class="fa fa-plus"> 新增</i></button>
                             </div>
                         </div>
                     </div>
@@ -80,8 +83,13 @@
                                     {{computerMaterialsCategory.categoryName}}
                                 </td>
                                 <td>
-                                    <button class="btn btn-info btn-sm" ng-click="export()"><i class="fa fa-edit"> 修改</i></button>
-                                    <button class="btn btn-info btn-sm" style="margin-right: 10px" ng-click="export()"><i class="fa fa-remove"> 删除</i></button>
+                                    <button class="btn btn-info btn-sm" v-on:click="edit(computerMaterialsCategory)">
+                                        <i class="fa fa-edit"> 修改</i>
+                                    </button>
+                                    <button class="btn btn-info btn-sm" style="margin-right: 10px"
+                                            v-on:click="remove(computerMaterialsCategory)">
+                                        <i class="fa fa-remove"> 删除</i>
+                                    </button>
                                 </td>
                             </tr>
                         </table>
@@ -99,6 +107,32 @@
             </div>
         </section>
         <!-- /.content -->
+        <!-- Modal -->
+        <div class="modal fade" id="insertOrEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 v-if="computerMaterialsCategory.categoryId" class="modal-title" id="myModalLabel">编辑类别</h4>
+                        <h4 v-else class="modal-title" id="myModalLabel">新增类别</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="categoryName" class="control-label">类别名称:</label>
+                                <input type="text" required id="categoryName" class="form-control"
+                                       v-model="computerMaterialsCategory.categoryName">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" v-on:click="save" class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div th:replace="footer :: footer"></div>
 </div>
@@ -124,21 +158,55 @@
 <script src="/js/vue-resource.min.js"></script>
 
 <script>
-    var reset = new Vue({
-        el: '#reset',
+    var list = new Vue({
+        el: '#list',
         data: {
-            searchComputerMaterialsCategory: {},
-            computerMaterialsCategorys: [{categoryId:1111}]
+            searchComputerMaterialsCategory: {pageNumber: 0, pageSize: 10},
+            computerMaterialsCategorys: []
         },
-        method: {
+        methods: {
             search: function () {
-
+                Vue.http.post('/computerMaterialsCategory/search', this.searchComputerMaterialsCategory).then(function (reps) {
+                    return reps.json();
+                }).then(function (resp) {
+                    list.computerMaterialsCategorys = resp.content;
+                });
             },
             export: function () {
 
+            },
+            remove: function (computerMaterialsCategory) {
+                Vue.http.post('/computerMaterialsCategory/delete', computerMaterialsCategory).then(function (reps) {
+                    list.search();
+                });
+            },
+            edit: function (computerMaterialsCategory) {
+                insertOrEdit.computerMaterialsCategory = computerMaterialsCategory;
+                $('#insertOrEdit').modal();
+            },
+            insert: function () {
+                insertOrEdit.computerMaterialsCategory = {};//新增先new一个新的对象;
+                $('#insertOrEdit').modal();
             }
         }
-    })
+    });
+    list.search();
+    var insertOrEdit = new Vue({
+        el: '#insertOrEdit',
+        data: {
+            computerMaterialsCategory: {}
+        },
+        methods: {
+            save: function () {
+                Vue.http.post('/computerMaterialsCategory/save', this.computerMaterialsCategory).then(function (reps) {
+                    list.search();
+                }, function (error) {
+                    console.error(error);
+                });
+                $('#insertOrEdit').modal('hide');
+            }
+        }
+    });
 </script>
 
 </body>

@@ -42,4 +42,12 @@ public class ComputerMaterialsCategoryService {
             return criteriaQuery.where(criteriaBuilder.and(and.toArray(new Predicate[0]))).getRestriction();
         };
     }
+
+    public void save(ComputerMaterialsCategory computerMaterialsCategory) {
+        computerMaterialsCategoryRepository.save(computerMaterialsCategory);
+    }
+
+    public void delete(ComputerMaterialsCategory computerMaterialsCategory) {
+        computerMaterialsCategoryRepository.delete(computerMaterialsCategory);
+    }
 }

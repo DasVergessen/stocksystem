@@ -199,14 +199,13 @@
         el: '#list',
         data: {
             searchInnerDepartmentInfo: {pageNumber: 0, pageSize: 10},
-            innerDepartmentInfos: [{departmentId: 1111}]
+            innerDepartmentInfos: []
         },
         methods: {
             search: function () {
                 Vue.http.post('/innerDepartmentInfo/search', this.searchInnerDepartmentInfo).then(function (reps) {
                     return reps.json();
                 }).then(function (resp) {
-                    console.log(resp);
                     list.innerDepartmentInfos = resp.content;
                 });
             },
@@ -244,7 +243,7 @@
                 $('#insertOrEdit').modal('hide');
             }
         }
-    })
+    });
 </script>
 
 </body>

@@ -211,14 +211,13 @@
         el: '#list',
         data: {
             searchSupplierInfo: {pageNumber: 0, pageSize: 10},
-            supplierInfos: [{supplierId: 1111}]
+            supplierInfos: []
         },
         methods: {
             search: function () {
                 Vue.http.post('/supplierInfo/search', this.searchSupplierInfo).then(function (reps) {
                     return reps.json();
                 }).then(function (resp) {
-//                    console.log(resp);
                     list.supplierInfos = resp.content;
                 });
             },
