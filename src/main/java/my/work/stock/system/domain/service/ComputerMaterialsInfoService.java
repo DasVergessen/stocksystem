@@ -54,4 +54,12 @@ public class ComputerMaterialsInfoService {
             return criteriaQuery.where(criteriaBuilder.and(and.toArray(new Predicate[0]))).getRestriction();
         };
     }
+
+    public void save(ComputerMaterialsInfo computerMaterialsInfo) {
+        computerMaterialsInfoRepository.save(computerMaterialsInfo);
+    }
+
+    public void delete(ComputerMaterialsInfo computerMaterialsInfo) {
+        computerMaterialsInfoRepository.delete(computerMaterialsInfo);
+    }
 }

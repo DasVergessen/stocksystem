@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -40,6 +41,11 @@ public class ComputerMaterialsCategoryController {
     @RequestMapping(value = "search", method = RequestMethod.POST)
     public Page<ComputerMaterialsCategory> page(@RequestBody SearchComputerMaterialsCategory searchComputerMaterialsCategory) {
         return computerMaterialsCategoryService.searchComputerMaterialsCategory(searchComputerMaterialsCategory);
+    }
+
+    @RequestMapping(value = "all", method = RequestMethod.GET)
+    public List<ComputerMaterialsCategory> all() {
+        return computerMaterialsCategoryService.findAllComputerMaterialsCategory();
     }
 
     @RequestMapping(value = "export", method = RequestMethod.GET)

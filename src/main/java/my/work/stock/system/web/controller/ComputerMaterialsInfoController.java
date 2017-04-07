@@ -5,6 +5,7 @@ import my.work.stock.system.domain.service.ComputerMaterialsInfoService;
 import my.work.stock.system.web.view.SearchComputerMaterialsInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,8 +26,18 @@ public class ComputerMaterialsInfoController {
         return new ModelAndView("basedatamanage/computermaterialsinfo", model);
     }
 
-    @RequestMapping(value = "search", method = RequestMethod.GET)
-    public Page<ComputerMaterialsInfo> page(SearchComputerMaterialsInfo searchComputerMaterialsInfo) {
+    @RequestMapping(value = "save", method = RequestMethod.POST)
+    public void save(@RequestBody ComputerMaterialsInfo computerMaterialsInfo) {
+        computerMaterialsInfoService.save(computerMaterialsInfo);
+    }
+
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    public void delete(@RequestBody ComputerMaterialsInfo computerMaterialsInfo) {
+        computerMaterialsInfoService.delete(computerMaterialsInfo);
+    }
+
+    @RequestMapping(value = "search", method = RequestMethod.POST)
+    public Page<ComputerMaterialsInfo> page(@RequestBody SearchComputerMaterialsInfo searchComputerMaterialsInfo) {
         return computerMaterialsInfoService.searchComputerMaterialsInfo(searchComputerMaterialsInfo);
     }
 
