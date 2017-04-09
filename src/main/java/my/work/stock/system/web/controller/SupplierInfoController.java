@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,6 +40,11 @@ public class SupplierInfoController {
     @RequestMapping(value = "search", method = RequestMethod.POST)
     public Page<SupplierInfo> page(@RequestBody SearchSupplierInfo searchSupplierInfo) {
         return supplierInfoService.searchSupplierInfo(searchSupplierInfo);
+    }
+
+    @RequestMapping(value = "all", method = RequestMethod.GET)
+    public List<SupplierInfo> all() {
+        return supplierInfoService.findAllSupplierInfo();
     }
 
     @RequestMapping(value = "export", method = RequestMethod.GET)

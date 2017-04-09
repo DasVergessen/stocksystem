@@ -5,6 +5,7 @@ import my.work.stock.system.domain.service.PurchaseInfoService;
 import my.work.stock.system.web.view.SearchPurchaseInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,8 +32,8 @@ public class PurchaseInfoController {
         return new ModelAndView("purchaseinfo/report", model);
     }
 
-    @RequestMapping(value = "search", method = RequestMethod.GET)
-    public Page<PurchaseInfo> page(SearchPurchaseInfo searchPurchaseInfo) {
+    @RequestMapping(value = "search", method = RequestMethod.POST)
+    public Page<PurchaseInfo> page(@RequestBody SearchPurchaseInfo searchPurchaseInfo) {
         return purchaseInfoService.searchPurchaseInfo(searchPurchaseInfo);
     }
 

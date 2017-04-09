@@ -165,7 +165,7 @@
     var reset = new Vue({
         el: '#reset',
         data: {
-            searchPurchaseInfo: {},
+            searchPurchaseInfo: {pageNumber: 0, pageSize: 10},
             purchaseInfos: [{
                 purchaseCode: 'RK1111',
                 computerMaterialsCategory: {categoryName: '类别一'},
