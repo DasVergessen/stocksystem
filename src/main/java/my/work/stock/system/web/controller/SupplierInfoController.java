@@ -65,7 +65,6 @@ public class SupplierInfoController {
         response.setHeader(headerKey, headerValue);
         Workbook wb = new XSSFWorkbook();
         Sheet supplierInfoSheet = wb.createSheet("供应商信息");
-        CreationHelper createHelper = wb.getCreationHelper();
 
         Row header = supplierInfoSheet.createRow((short) 0);//头
         header.createCell(0).setCellValue("供应商编码");

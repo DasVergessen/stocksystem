@@ -72,7 +72,7 @@
 
                         <div class="box-tools">
                             <div class="input-group">
-                                <button class="btn btn-info btn-sm pull-right" ng-click="export()"><i
+                                <button class="btn btn-info btn-sm pull-right" v-on:click="exportExcel"><i
                                         class="fa fa-file-excel-o"> 导出</i></button>
                                 <button class="btn btn-info btn-sm" style="margin-right: 10px" v-on:click="insert"><i
                                         class="fa fa-plus"> 新增</i></button>
@@ -109,25 +109,44 @@
                                     <button class="btn btn-info btn-sm" v-on:click="edit(innerDepartmentInfo)">
                                         <i class="fa fa-edit"> 修改</i>
                                     </button>
-                                    <button class="btn btn-info btn-sm" style="margin-right: 10px" v-on:click="remove(innerDepartmentInfo)">
+                                    <button class="btn btn-info btn-sm" style="margin-right: 10px"
+                                            v-on:click="remove(innerDepartmentInfo)">
                                         <i class="fa fa-remove"> 删除</i>
                                     </button>
                                 </td>
                             </tr>
                         </table>
                     </div>
-                    <div class="box-footer text-center clearfix">
-                        <ul class="pagination pagination-sm no-margin text-center">
-                            <li><a href="#">«</a></li>
-                            <li><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">»</a></li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </section>
+        <div id="pagination" class="row text-center">
+            <ul class="pagination-sm pagination">
+                <li v-bind:class="{disabled:first}"
+                    class="pagination-first ng-scope">
+                    <a href="#" @click="selectPage(0)" class="ng-binding">&lt;&lt;</a>
+                </li>
+                <li v-bind:class="{disabled:first}"
+                    class="pagination-prev ng-scope">
+                    <a href="#" @click="selectPage(number - 1)" class="ng-binding">&lt;</a>
+                </li>
+
+                <li v-for="pageNumber in totalPages"
+                    v-bind:class="{active:pageNumber==number+1}"
+                    class="pagination-page ng-scope">
+                    <a href="#" @click="selectPage(pageNumber-1)" class="ng-binding">{{pageNumber}}</a>
+                </li>
+
+                <li v-bind:class="{disabled:last}" class="pagination-next ng-scope">
+                    <a href="#" @click="selectPage(number + 1)" class="ng-binding">&gt;</a>
+                </li>
+
+                <li v-bind:class="{disabled:last}" class="pagination-last ng-scope">
+                    <a href="#" @click="selectPage(totalPages-1)" class="ng-binding">&gt;&gt;</a>
+                </li>
+
+            </ul>
+        </div>
         <!-- /.content -->
         <!-- Modal -->
         <div class="modal fade" id="insertOrEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -207,10 +226,14 @@
                     return reps.json();
                 }).then(function (resp) {
                     list.innerDepartmentInfos = resp.content;
+                    pagination.first = resp.first;
+                    pagination.last = resp.last;
+                    pagination.totalPages = resp.totalPages;
+                    pagination.number = resp.number;
                 });
             },
-            export: function () {
-
+            exportExcel: function () {
+                window.location = '/innerDepartmentInfo/export';
             },
             remove: function (innerDepartmentInfo) {
                 Vue.http.post('/innerDepartmentInfo/delete', innerDepartmentInfo).then(function (reps) {
@@ -241,6 +264,24 @@
                     console.error(error);
                 });
                 $('#insertOrEdit').modal('hide');
+            }
+        }
+    });
+    var pagination = new Vue({
+        el: '#pagination',
+        data: {
+            first: true,
+            last: true,
+            totalPages: 1,
+            number: 0
+        },
+        methods: {
+            selectPage: function (pageNumber) {
+                if (pageNumber < 0 || pageNumber >= this.totalPages) {
+                    return;
+                }
+                list.searchInnerDepartmentInfo.pageNumber = pageNumber;
+                list.search();
             }
         }
     });

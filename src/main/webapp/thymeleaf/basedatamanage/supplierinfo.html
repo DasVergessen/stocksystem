@@ -228,7 +228,7 @@
     var list = new Vue({
         el: '#list',
         data: {
-            searchSupplierInfo: {pageNumber: 0, pageSize: 12},
+            searchSupplierInfo: {pageNumber: 0, pageSize: 10},
             supplierInfos: []
         },
         methods: {
@@ -282,8 +282,8 @@
         el: '#pagination',
         data: {
             first: true,
-            last: false,
-            totalPages: 2,
+            last: true,
+            totalPages: 1,
             number: 0
         },
         methods: {
