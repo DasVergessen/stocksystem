@@ -108,6 +108,7 @@
                         <form>
                             <div class="col-xs-6 form-group">
                                 <label for="purchaseDate" class="control-label">日期:</label>
+
                                 <div class="input-group date">
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
@@ -389,6 +390,8 @@
         mounted: function () {//fix datepicker bug
             $('#purchaseDate').datepicker({
                 autoclose: true,
+                todayBtn: true,
+                todayHighlight: true,
                 language: 'zh-CN'
             }).on('changeDate', function () {
                         insertOrEdit.purchaseInfo.purchaseDate = $('#purchaseDate').val();

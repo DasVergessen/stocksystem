@@ -319,6 +319,8 @@
         mounted: function () {//fix datepicker bug
             $('#purchaseDate').datepicker({
                 autoclose: true,
+                todayBtn: true,
+                todayHighlight: true,
                 language: 'zh-CN'
             }).on('changeDate', function () {
                         list.searchPurchaseInfo.purchaseDate = $('#purchaseDate').val();
