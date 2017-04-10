@@ -134,46 +134,21 @@
                 </li>
                 <li v-bind:class="{disabled:first}"
                     class="pagination-prev ng-scope">
-                    <a href="#" ng-click="selectPage(number - 1)" class="ng-binding">&lt;</a>
+                    <a href="#" @click="selectPage(number - 1)" class="ng-binding">&lt;</a>
                 </li>
 
-                <li ng-repeat="page in pages track by $index"
-                    ng-class="{active: page.active,disabled: ngDisabled&amp;&amp;!page.active}"
-                    class="pagination-page ng-scope"><a href="" ng-click="selectPage(page.number, $event)"
-                                                        class="ng-binding">34</a></li>
-
-                <li ng-repeat="page in pages track by $index"
-                    ng-class="{active: page.active,disabled: ngDisabled&amp;&amp;!page.active}"
-                    class="pagination-page ng-scope"><a href="" ng-click="selectPage(page.number, $event)"
-                                                        class="ng-binding">35</a></li>
-
-                <li ng-repeat="page in pages track by $index"
-                    ng-class="{active: page.active,disabled: ngDisabled&amp;&amp;!page.active}"
-                    class="pagination-page ng-scope"><a href="" ng-click="selectPage(page.number, $event)"
-                                                        class="ng-binding">36</a></li>
-
-                <li ng-repeat="page in pages track by $index"
-                    ng-class="{active: page.active,disabled: ngDisabled&amp;&amp;!page.active}"
-                    class="pagination-page ng-scope"><a href="" ng-click="selectPage(page.number, $event)"
-                                                        class="ng-binding">37</a></li>
-
-                <li ng-repeat="page in pages track by $index"
-                    ng-class="{active: page.active,disabled: ngDisabled&amp;&amp;!page.active}"
-                    class="pagination-page ng-scope"><a href="" ng-click="selectPage(page.number, $event)"
-                                                        class="ng-binding">38</a></li>
-
-                <li ng-repeat="page in pages track by $index"
-                    ng-class="{active: page.active,disabled: ngDisabled&amp;&amp;!page.active}"
-                    class="pagination-page ng-scope active"><a href=""
-                                                               ng-click="selectPage(page.number, $event)"
-                                                               class="ng-binding">39</a></li>
+                <li v-for="pageNumber in totalPages"
+                    v-bind:class="{active:pageNumber==number+1}"
+                    class="pagination-page ng-scope">
+                    <a href="#" @click="selectPage(pageNumber-1)" class="ng-binding">{{pageNumber}}</a>
+                </li>
 
                 <li v-bind:class="{disabled:last}" class="pagination-next ng-scope">
-                    <a href="#" ng-click="selectPage(number + 1)" class="ng-binding">&gt;</a>
+                    <a href="#" @click="selectPage(number + 1)" class="ng-binding">&gt;</a>
                 </li>
 
                 <li v-bind:class="{disabled:last}" class="pagination-last ng-scope">
-                    <a href="#" ng-click="selectPage(totalPages)" class="ng-binding">&gt;&gt;</a>
+                    <a href="#" @click="selectPage(totalPages-1)" class="ng-binding">&gt;&gt;</a>
                 </li>
 
             </ul>
@@ -253,7 +228,7 @@
     var list = new Vue({
         el: '#list',
         data: {
-            searchSupplierInfo: {pageNumber: 0, pageSize: 10},
+            searchSupplierInfo: {pageNumber: 0, pageSize: 3},
             supplierInfos: []
         },
         methods: {
@@ -262,6 +237,10 @@
                     return reps.json();
                 }).then(function (resp) {
                     list.supplierInfos = resp.content;
+                    pagination.first = resp.first;
+                    pagination.last = resp.last;
+                    pagination.totalPages = resp.totalPages;
+                    pagination.number = resp.number;
                 });
             },
             export: function () {
@@ -309,7 +288,11 @@
         },
         methods: {
             selectPage: function (pageNumber) {
-                console.log(pageNumber);
+                if (pageNumber < 0 || pageNumber >= this.totalPages) {
+                    return;
+                }
+                list.searchSupplierInfo.pageNumber = pageNumber;
+                list.search();
             }
         }
     });
