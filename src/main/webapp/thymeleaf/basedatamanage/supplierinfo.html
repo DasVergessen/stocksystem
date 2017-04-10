@@ -75,7 +75,7 @@
 
                         <div class="box-tools">
                             <div class="input-group">
-                                <button class="btn btn-info btn-sm pull-right" ng-click="export()"><i
+                                <button class="btn btn-info btn-sm pull-right" v-on:click="exportExcel"><i
                                         class="fa fa-file-excel-o"> 导出</i></button>
                                 <button class="btn btn-info btn-sm" style="margin-right: 10px" v-on:click="insert"><i
                                         class="fa fa-plus"> 新增</i></button>
@@ -228,7 +228,7 @@
     var list = new Vue({
         el: '#list',
         data: {
-            searchSupplierInfo: {pageNumber: 0, pageSize: 3},
+            searchSupplierInfo: {pageNumber: 0, pageSize: 12},
             supplierInfos: []
         },
         methods: {
@@ -243,8 +243,8 @@
                     pagination.number = resp.number;
                 });
             },
-            export: function () {
-
+            exportExcel: function () {
+                window.location = '/supplierInfo/export';
             },
             remove: function (supplierInfo) {
                 Vue.http.post('/supplierInfo/delete', supplierInfo).then(function (reps) {
