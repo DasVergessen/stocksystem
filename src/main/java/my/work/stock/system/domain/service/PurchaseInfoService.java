@@ -60,4 +60,12 @@ public class PurchaseInfoService {
             return criteriaQuery.where(criteriaBuilder.and(and.toArray(new Predicate[0]))).getRestriction();
         };
     }
+
+    public PurchaseInfo save(PurchaseInfo purchaseInfo) {
+        return purchaseInfoRepository.save(purchaseInfo);
+    }
+
+    public void delete(PurchaseInfo purchaseInfo) {
+        purchaseInfoRepository.delete(purchaseInfo);
+    }
 }

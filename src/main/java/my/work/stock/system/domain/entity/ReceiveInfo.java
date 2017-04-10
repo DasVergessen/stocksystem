@@ -9,9 +9,6 @@ public class ReceiveInfo implements Serializable {
     @GeneratedValue
     private Integer receiveId;
 
-    @Column(length = 64)
-    private String receiveCode;
-
     @Column(nullable = false)
     private String receiveDate;
 
@@ -39,14 +36,6 @@ public class ReceiveInfo implements Serializable {
 
     public void setReceiveId(Integer receiveId) {
         this.receiveId = receiveId;
-    }
-
-    public String getReceiveCode() {
-        return receiveCode;
-    }
-
-    public void setReceiveCode(String receiveCode) {
-        this.receiveCode = receiveCode;
     }
 
     public String getReceiveDate() {

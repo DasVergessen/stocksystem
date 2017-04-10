@@ -52,13 +52,13 @@
                                 <th>入库单号</th>
                                 <th>入库日期</th>
                                 <th>供货单位</th>
-                                <th>金额</th>
+                                <th>小计金额</th>
                                 <th>附注</th>
                                 <th>操作</th>
                             </tr>
                             <tr v-for="purchaseInfo in purchaseInfos">
                                 <td>
-                                    {{purchaseInfo.purchaseCode}}
+                                    RK{{purchaseInfo.purchaseId}}
                                 </td>
                                 <td>
                                     {{purchaseInfo.purchaseDate}}
@@ -67,7 +67,7 @@
                                     {{purchaseInfo.supplierInfo.supplierName}}
                                 </td>
                                 <td>
-                                    {{purchaseInfo.purchasePrice}}
+                                    {{purchaseTotalPrice(purchaseInfo)}}
                                 </td>
                                 <td>
                                     {{purchaseInfo.memo}}
@@ -108,8 +108,7 @@
                         <form>
                             <div class="col-xs-6 form-group">
                                 <label for="purchaseDate" class="control-label">日期:</label>
-                                <!--<input type="text" required id="purchaseDate" class="form-control"-->
-                                <!--v-model="purchaseInfo.purchaseDate">-->
+
                                 <div class="input-group date">
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
@@ -148,18 +147,18 @@
                             </div>
                             <div class="col-xs-6 form-group">
                                 <label for="purchaseQuantity" class="control-label">数量:</label>
-                                <input type="number" min="1" id="purchaseQuantity" class="form-control"
+                                <input type="text" id="purchaseQuantity" class="form-control"
                                        v-model="purchaseInfo.purchaseQuantity">
                             </div>
                             <div class="col-xs-6 form-group">
-                                <label for="purchasePrice" class="control-label">单价:</label>
-                                <input type="text" id="purchasePrice" class="form-control"
-                                       v-model="purchaseInfo.purchasePrice">
+                                <label for="purchasePriceString" class="control-label">单价:</label>
+                                <input type="text" id="purchasePriceString" class="form-control"
+                                       v-model="purchaseInfo.purchasePriceString">
                             </div>
                             <div class="col-xs-6 form-group">
                                 <label for="purchaseTotalPrice" class="control-label">小计金额:</label>
                                 <input type="text" readonly id="purchaseTotalPrice" class="form-control"
-                                       v-model="purchaseInfo.purchaseTotalPrice">
+                                       v-bind:value="purchaseTotalPrice">
                             </div>
                             <div class="col-xs-6 form-group">
                                 <label for="memo" class="control-label">备注:</label>
@@ -249,7 +248,8 @@
                                             <label>
                                                 <input v-model="computerMaterialsId" type="radio"
                                                        name="computerMaterialsInfo"
-                                                       v-bind:value="computerMaterialsInfo.computerMaterialsId" class="minimal">
+                                                       v-bind:value="computerMaterialsInfo.computerMaterialsId"
+                                                       class="minimal">
                                                 {{computerMaterialsInfo.computerMaterialsId}}
                                             </label>
                                         </td>
@@ -281,8 +281,11 @@
     <div th:replace="footer :: footer"></div>
 </div>
 
+<script src="/js/numeral.min.js"></script>
 <!-- jQuery 2.2.3 -->
 <script src="/js/jquery-2.2.3.min.js"></script>
+<script src="/js/jquery.validate.min.js"></script>
+<script src="/js/messages_zh.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
 <script src="/js/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
@@ -309,8 +312,18 @@
             purchaseInfos: []
         },
         methods: {
+            purchaseTotalPrice: function (purchaseInfo) {
+                return numeral(purchaseInfo.purchaseQuantity).multiply(purchaseInfo.purchasePrice / 100).format('0.00');
+            },
             export: function () {
 
+            },
+            search: function () {
+                Vue.http.post('/purchaseInfo/search', this.searchPurchaseInfo).then(function (reps) {
+                    return reps.json();
+                }).then(function (resp) {
+                    list.purchaseInfos = resp.content;
+                });
             },
             remove: function (purchaseInfo) {
                 Vue.http.post('/purchaseInfo/delete', purchaseInfo).then(function (reps) {
@@ -318,11 +331,15 @@
                 });
             },
             edit: function (purchaseInfo) {
+                purchaseInfo.purchasePriceString = purchaseInfo.purchasePrice / 100;
                 insertOrEdit.purchaseInfo = purchaseInfo;
                 $('#insertOrEdit').modal();
             },
             insert: function () {
                 insertOrEdit.purchaseInfo = {
+                    purchaseDate: '',
+                    purchaseQuantity: 0,
+                    purchasePriceString: 0,
                     supplierInfo: {},
                     computerMaterialsInfo: {},
                     computerMaterialsCategory: {}
@@ -334,7 +351,14 @@
     var insertOrEdit = new Vue({
         el: '#insertOrEdit',
         data: {
-            purchaseInfo: {supplierInfo: {}, computerMaterialsInfo: {}, computerMaterialsCategory: {}},
+            purchaseInfo: {
+                purchaseDate: '',
+                purchaseQuantity: 0,
+                purchasePriceString: 0,
+                supplierInfo: {},
+                computerMaterialsInfo: {},
+                computerMaterialsCategory: {}
+            },
             supplierInfos: []
         },
         methods: {
@@ -349,6 +373,31 @@
                 });
                 $('#insertOrEdit').modal('hide');
             }
+        },
+        computed: {
+            purchaseTotalPrice: function () {
+                return numeral(this.purchaseInfo.purchaseQuantity).multiply(this.purchaseInfo.purchasePriceString).format('0.00');
+            }
+        },
+        watch: {
+//            'purchaseInfo.purchaseQuantity': function (val, oldVal) {
+//            },
+            'purchaseInfo.purchasePriceString': function (val, oldVal) {
+                if (val) {
+                    this.purchaseInfo.purchasePrice = val * 100;
+                }
+//                console.log(val);
+//                console.log(oldVal);
+            }
+        },
+        mounted: function () {//fix datepicker bug
+            $('#purchaseDate').datepicker({
+                autoclose: true,
+                language: 'zh-CN'
+            }).on('changeDate', function () {
+                        insertOrEdit.purchaseInfo.purchaseDate = $('#purchaseDate').val();
+                    }
+            );
         }
     });
     var search = new Vue({
@@ -382,10 +431,7 @@
             }
         }
     });
-    $('#purchaseDate').datepicker({
-        autoclose: true,
-        language: 'zh-CN'
-    });
+    list.search();
     Vue.http.get('/supplierInfo/all').then(function (reps) {
         return reps.json();
     }).then(function (resp) {

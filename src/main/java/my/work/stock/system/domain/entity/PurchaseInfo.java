@@ -5,13 +5,10 @@ import java.io.Serializable;
 
 @Entity
 public class PurchaseInfo implements Serializable {
-    
+
     @Id
     @GeneratedValue
     private Integer purchaseId;
-
-    @Column(length = 64)
-    private String purchaseCode;
 
     @Column(nullable = false)
     private String purchaseDate;
@@ -34,20 +31,15 @@ public class PurchaseInfo implements Serializable {
     @Column(length = 128)
     private String memo;
 
+    @Transient
+    private String purchasePriceString;
+
     public Integer getPurchaseId() {
         return purchaseId;
     }
 
     public void setPurchaseId(Integer purchaseId) {
         this.purchaseId = purchaseId;
-    }
-
-    public String getPurchaseCode() {
-        return purchaseCode;
-    }
-
-    public void setPurchaseCode(String purchaseCode) {
-        this.purchaseCode = purchaseCode;
     }
 
     public String getPurchaseDate() {
@@ -104,5 +96,13 @@ public class PurchaseInfo implements Serializable {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getPurchasePriceString() {
+        return purchasePriceString;
+    }
+
+    public void setPurchasePriceString(String purchasePriceString) {
+        this.purchasePriceString = purchasePriceString;
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -35,6 +36,22 @@ public class PurchaseInfoController {
     @RequestMapping(value = "search", method = RequestMethod.POST)
     public Page<PurchaseInfo> page(@RequestBody SearchPurchaseInfo searchPurchaseInfo) {
         return purchaseInfoService.searchPurchaseInfo(searchPurchaseInfo);
+    }
+
+    @RequestMapping(value = "save", method = RequestMethod.POST)
+    public String save(@RequestBody PurchaseInfo purchaseInfo) {
+        PurchaseInfo info = purchaseInfoService.save(purchaseInfo);
+        return "ok";
+    }
+
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    public void delete(@RequestBody PurchaseInfo purchaseInfo) {
+        purchaseInfoService.delete(purchaseInfo);
+    }
+
+    @RequestMapping(value = "all", method = RequestMethod.POST)
+    public List<PurchaseInfo> all() {
+        return purchaseInfoService.findAllPurchaseInfo();
     }
 
     @RequestMapping(value = "export", method = RequestMethod.GET)
