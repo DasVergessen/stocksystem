@@ -380,14 +380,10 @@
             }
         },
         watch: {
-//            'purchaseInfo.purchaseQuantity': function (val, oldVal) {
-//            },
             'purchaseInfo.purchasePriceString': function (val, oldVal) {
                 if (val) {
                     this.purchaseInfo.purchasePrice = val * 100;
                 }
-//                console.log(val);
-//                console.log(oldVal);
             }
         },
         mounted: function () {//fix datepicker bug

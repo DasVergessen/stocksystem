@@ -31,7 +31,7 @@
         </section>
 
         <!-- Main content -->
-        <section id="reset" class="content">
+        <section id="list" class="content">
             <div class="box box-widget">
                 <div class="box-body">
                     <form class="">
@@ -56,7 +56,7 @@
                                    placeholder="供应商电话"/>
                         </div>
                         <div class="col-md-2 form-group" style="margin-top: 25px">
-                            <button type="button" ng-click="search()" class="btn btn-success">
+                            <button type="button" v-on:click="search" class="btn btn-success">
                                 <i class="fa fa-search"> 查询</i>
                             </button>
                         </div>
@@ -74,7 +74,7 @@
                                 <th>入库单号</th>
                                 <th>入库日期</th>
                                 <th>供应商</th>
-                                <th>材编码</th>
+                                <th>耗材编码</th>
                                 <th>耗材名称</th>
                                 <th>耗材规格</th>
                                 <th>所属类别</th>
@@ -86,7 +86,7 @@
                             </tr>
                             <tr v-for="purchaseInfo in purchaseInfos">
                                 <td>
-                                    {{purchaseInfo.purchaseCode}}
+                                    RK{{purchaseInfo.purchaseId}}
                                 </td>
                                 <td>
                                     {{purchaseInfo.purchaseDate}}
@@ -113,10 +113,10 @@
                                     {{purchaseInfo.purchaseQuantity}}
                                 </td>
                                 <td>
-                                    {{purchaseInfo.purchasePrice}}
+                                    {{purchaseInfo.purchasePrice | formatMoney}}
                                 </td>
                                 <td>
-                                    {{purchaseInfo.purchasePrice}}
+                                    {{purchaseInfo.purchasePrice*purchaseInfo.purchaseQuantity | formatMoney}}
                                 </td>
                                 <td>
                                     {{purchaseInfo.memo}}
@@ -141,6 +141,7 @@
     <div th:replace="footer :: footer"></div>
 </div>
 
+<script src="/js/numeral.min.js"></script>
 <!-- jQuery 2.2.3 -->
 <script src="/js/jquery-2.2.3.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
@@ -162,26 +163,28 @@
 <script src="/js/vue-resource.min.js"></script>
 
 <script>
-    var reset = new Vue({
-        el: '#reset',
+    var list = new Vue({
+        el: '#list',
         data: {
             searchPurchaseInfo: {pageNumber: 0, pageSize: 10},
-            purchaseInfos: [{
-                purchaseCode: 'RK1111',
-                computerMaterialsCategory: {categoryName: '类别一'},
-                supplierInfo: {supplierName: '供应商'},
-                computerMaterialsInfo: {computerMaterialsId: 1}
-            }]
+            purchaseInfos: []
         },
-        method: {
+        filters: {
+            formatMoney: function (n) {
+                return numeral(n / 100).format('0.00');
+            }
+        },
+        methods: {
             search: function () {
-
-            },
-            export: function () {
-
+                Vue.http.post('/purchaseInfo/search', this.searchPurchaseInfo).then(function (reps) {
+                    return reps.json();
+                }).then(function (resp) {
+                    list.purchaseInfos = resp.content;
+                });
             }
         }
-    })
+    });
+    list.search();
 </script>
 
 </body>
