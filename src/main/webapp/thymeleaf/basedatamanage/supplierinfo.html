@@ -123,18 +123,61 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="box-footer text-center clearfix">
-                        <ul class="pagination pagination-sm no-margin text-center">
-                            <li><a href="#">«</a></li>
-                            <li><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">»</a></li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </section>
+        <div id="pagination" class="row text-center">
+            <ul class="pagination-sm pagination">
+                <li v-bind:class="{disabled:first}"
+                    class="pagination-first ng-scope">
+                    <a href="#" @click="selectPage(0)" class="ng-binding">&lt;&lt;</a>
+                </li>
+                <li v-bind:class="{disabled:first}"
+                    class="pagination-prev ng-scope">
+                    <a href="#" ng-click="selectPage(number - 1)" class="ng-binding">&lt;</a>
+                </li>
+
+                <li ng-repeat="page in pages track by $index"
+                    ng-class="{active: page.active,disabled: ngDisabled&amp;&amp;!page.active}"
+                    class="pagination-page ng-scope"><a href="" ng-click="selectPage(page.number, $event)"
+                                                        class="ng-binding">34</a></li>
+
+                <li ng-repeat="page in pages track by $index"
+                    ng-class="{active: page.active,disabled: ngDisabled&amp;&amp;!page.active}"
+                    class="pagination-page ng-scope"><a href="" ng-click="selectPage(page.number, $event)"
+                                                        class="ng-binding">35</a></li>
+
+                <li ng-repeat="page in pages track by $index"
+                    ng-class="{active: page.active,disabled: ngDisabled&amp;&amp;!page.active}"
+                    class="pagination-page ng-scope"><a href="" ng-click="selectPage(page.number, $event)"
+                                                        class="ng-binding">36</a></li>
+
+                <li ng-repeat="page in pages track by $index"
+                    ng-class="{active: page.active,disabled: ngDisabled&amp;&amp;!page.active}"
+                    class="pagination-page ng-scope"><a href="" ng-click="selectPage(page.number, $event)"
+                                                        class="ng-binding">37</a></li>
+
+                <li ng-repeat="page in pages track by $index"
+                    ng-class="{active: page.active,disabled: ngDisabled&amp;&amp;!page.active}"
+                    class="pagination-page ng-scope"><a href="" ng-click="selectPage(page.number, $event)"
+                                                        class="ng-binding">38</a></li>
+
+                <li ng-repeat="page in pages track by $index"
+                    ng-class="{active: page.active,disabled: ngDisabled&amp;&amp;!page.active}"
+                    class="pagination-page ng-scope active"><a href=""
+                                                               ng-click="selectPage(page.number, $event)"
+                                                               class="ng-binding">39</a></li>
+
+                <li v-bind:class="{disabled:last}" class="pagination-next ng-scope">
+                    <a href="#" ng-click="selectPage(number + 1)" class="ng-binding">&gt;</a>
+                </li>
+
+                <li v-bind:class="{disabled:last}" class="pagination-last ng-scope">
+                    <a href="#" ng-click="selectPage(totalPages)" class="ng-binding">&gt;&gt;</a>
+                </li>
+
+            </ul>
+        </div>
         <!-- Modal -->
         <div class="modal fade" id="insertOrEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
@@ -253,6 +296,20 @@
                     console.error(error);
                 });
                 $('#insertOrEdit').modal('hide');
+            }
+        }
+    });
+    var pagination = new Vue({
+        el: '#pagination',
+        data: {
+            first: true,
+            last: false,
+            totalPages: 2,
+            number: 0
+        },
+        methods: {
+            selectPage: function (pageNumber) {
+                console.log(pageNumber);
             }
         }
     });
