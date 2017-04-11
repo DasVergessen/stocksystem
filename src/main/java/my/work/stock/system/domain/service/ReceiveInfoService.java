@@ -36,8 +36,8 @@ public class ReceiveInfoService {
     private Specification<ReceiveInfo> getWhereClause(SearchReceiveInfo searchReceiveInfo) {
         return (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> and = new ArrayList<>();
-            if (StringUtils.isNotEmpty(searchReceiveInfo.getPurchaseDate())) {
-                and.add(criteriaBuilder.equal(root.get("purchaseDate").as(String.class), searchReceiveInfo.getPurchaseDate()));
+            if (StringUtils.isNotEmpty(searchReceiveInfo.getReceiveDate())) {
+                and.add(criteriaBuilder.equal(root.get("receiveDate").as(String.class), searchReceiveInfo.getReceiveDate()));
             }
             Integer departmentId = searchReceiveInfo.getDepartmentId();
             if (departmentId != null) {
@@ -59,5 +59,13 @@ public class ReceiveInfoService {
             }
             return criteriaQuery.where(criteriaBuilder.and(and.toArray(new Predicate[0]))).getRestriction();
         };
+    }
+
+    public ReceiveInfo save(ReceiveInfo receiveInfo) {
+        return receiveInfoRepository.save(receiveInfo);
+    }
+
+    public void delete(ReceiveInfo receiveInfo) {
+        receiveInfoRepository.delete(receiveInfo);
     }
 }

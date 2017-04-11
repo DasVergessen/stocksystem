@@ -27,6 +27,9 @@ public class ReceiveInfo implements Serializable {
     @Column(nullable = false)
     private Integer receivePrice;
 
+    @Transient
+    private String receivePriceString;
+
     @Column(length = 128)
     private String memo;
 
@@ -92,5 +95,13 @@ public class ReceiveInfo implements Serializable {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getReceivePriceString() {
+        return receivePriceString;
+    }
+
+    public void setReceivePriceString(String receivePriceString) {
+        this.receivePriceString = receivePriceString;
     }
 }

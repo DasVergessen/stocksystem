@@ -3,7 +3,7 @@ package my.work.stock.system.web.view;
 import java.io.Serializable;
 
 public class SearchReceiveInfo extends PageBase implements Serializable {
-    private String purchaseDate;
+    private String receiveDate;
 
     private Integer departmentId;
 
@@ -11,12 +11,12 @@ public class SearchReceiveInfo extends PageBase implements Serializable {
 
     private Integer categoryId;
 
-    public String getPurchaseDate() {
-        return purchaseDate;
+    public String getReceiveDate() {
+        return receiveDate;
     }
 
-    public void setPurchaseDate(String purchaseDate) {
-        this.purchaseDate = purchaseDate;
+    public void setReceiveDate(String receiveDate) {
+        this.receiveDate = receiveDate;
     }
 
     public Integer getDepartmentId() {

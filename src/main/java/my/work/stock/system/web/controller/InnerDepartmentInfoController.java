@@ -49,6 +49,11 @@ public class InnerDepartmentInfoController {
         return innerDepartmentInfoService.searchInnerDepartmentInfo(searchInnerDepartmentInfo);
     }
 
+    @RequestMapping(value = "all", method = RequestMethod.GET)
+    public List<InnerDepartmentInfo> all() {
+        return innerDepartmentInfoService.findAllInnerDepartmentInfo();
+    }
+
     @RequestMapping(value = "export", method = RequestMethod.GET)
     public Boolean export(HttpServletResponse response) throws IOException {
         List<InnerDepartmentInfo> allInnerDepartmentInfo = innerDepartmentInfoService.findAllInnerDepartmentInfo();
