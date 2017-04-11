@@ -137,10 +137,10 @@
                                     {{receiveInfo.receiveQuantity}}
                                 </td>
                                 <td>
-                                    {{receiveInfo.receivePrice}}
+                                    {{receiveInfo.receivePrice | formatMoney}}
                                 </td>
                                 <td>
-                                    {{receiveInfo.receivePrice}}
+                                    {{receiveInfo.receivePrice*receiveInfo.receiveQuantity | formatMoney}}
                                 </td>
                                 <td>
                                     {{receiveInfo.memo}}
