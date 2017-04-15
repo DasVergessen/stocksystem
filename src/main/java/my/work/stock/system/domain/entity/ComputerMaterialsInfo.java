@@ -17,6 +17,8 @@ public class ComputerMaterialsInfo implements Serializable {
     private String computerMaterialsSpecifications;
     @Column(length = 64)
     private String computerMaterialsUnit;
+    @Column
+    private Integer quantity;
 
     public Integer getComputerMaterialsId() {
         return computerMaterialsId;
@@ -56,5 +58,13 @@ public class ComputerMaterialsInfo implements Serializable {
 
     public void setComputerMaterialsUnit(String computerMaterialsUnit) {
         this.computerMaterialsUnit = computerMaterialsUnit;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }

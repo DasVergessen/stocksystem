@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import java.util.List;
 public class ReceiveInfoService {
     @Autowired
     private ReceiveInfoRepository receiveInfoRepository;
+    @Autowired
+    private ComputerMaterialsInfoService computerMaterialsInfoService;
 
     public Page<ReceiveInfo> searchReceiveInfo(SearchReceiveInfo searchReceiveInfo) {
         Specification<ReceiveInfo> specification = getWhereClause(searchReceiveInfo);
@@ -61,11 +64,69 @@ public class ReceiveInfoService {
         };
     }
 
-    public ReceiveInfo save(ReceiveInfo receiveInfo) {
-        return receiveInfoRepository.save(receiveInfo);
+    @Transactional
+    public String save(ReceiveInfo receiveInfo) {
+        Integer receiveId = receiveInfo.getReceiveId();
+        if (receiveId != null) {
+            ReceiveInfo old = receiveInfoRepository.findOne(receiveId);
+            Integer oldQuantity = old.getReceiveQuantity();
+            Integer computerMaterialsId = receiveInfo.getComputerMaterialsInfo().getComputerMaterialsId();
+            Integer receiveQuantity = receiveInfo.getReceiveQuantity();
+            if (computerMaterialsId != null) {
+                ComputerMaterialsInfo computerMaterialsInfo = computerMaterialsInfoService.findOne(computerMaterialsId);
+                if (computerMaterialsInfo != null && receiveQuantity != null && oldQuantity != null) {
+                    Integer quantity = computerMaterialsInfo.getQuantity();
+                    if (quantity != null && quantity - receiveQuantity + oldQuantity >= 0) {
+                        computerMaterialsInfo.setQuantity(quantity - receiveQuantity + oldQuantity);
+                        computerMaterialsInfoService.save(computerMaterialsInfo);
+                    } else {
+                        return "领用库存不够,领用失败!";
+                    }
+                } else {
+                    return "领用库存为空或者找不到对应的耗材!";
+                }
+            }
+        } else {
+            Integer computerMaterialsId = receiveInfo.getComputerMaterialsInfo().getComputerMaterialsId();
+            Integer receiveQuantity = receiveInfo.getReceiveQuantity();
+            if (computerMaterialsId != null) {
+                ComputerMaterialsInfo computerMaterialsInfo = computerMaterialsInfoService.findOne(computerMaterialsId);
+                if (computerMaterialsInfo != null && receiveQuantity != null) {
+                    Integer quantity = computerMaterialsInfo.getQuantity();
+                    if (quantity != null && quantity - receiveQuantity >= 0) {
+                        computerMaterialsInfo.setQuantity(quantity - receiveQuantity);
+                        computerMaterialsInfoService.save(computerMaterialsInfo);
+                    } else {
+                        return "领用库存不够,领用失败!";
+                    }
+                } else {
+                    return "领用库存为空或者找不到对应的耗材!";
+                }
+            }
+        }
+        receiveInfoRepository.save(receiveInfo);
+        return "保存成功!";
     }
 
-    public void delete(ReceiveInfo receiveInfo) {
+    @Transactional
+    public String delete(ReceiveInfo receiveInfo) {
+        Integer computerMaterialsId = receiveInfo.getComputerMaterialsInfo().getComputerMaterialsId();
+        Integer receiveQuantity = receiveInfo.getReceiveQuantity();
+        if (computerMaterialsId != null) {
+            ComputerMaterialsInfo computerMaterialsInfo = computerMaterialsInfoService.findOne(computerMaterialsId);
+            if (computerMaterialsInfo != null && receiveQuantity != null) {
+                Integer quantity = computerMaterialsInfo.getQuantity();
+                if (quantity != null) {//删除领用记录,恢复库存
+                    computerMaterialsInfo.setQuantity(quantity + receiveQuantity);
+                    computerMaterialsInfoService.save(computerMaterialsInfo);
+                } else {
+                    return "删除失败!";
+                }
+            } else {
+                return "领用库存为空或者找不到对应的耗材!";
+            }
+        }
         receiveInfoRepository.delete(receiveInfo);
+        return "删除成功";
     }
 }

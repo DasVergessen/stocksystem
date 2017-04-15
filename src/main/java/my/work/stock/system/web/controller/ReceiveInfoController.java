@@ -1,6 +1,5 @@
 package my.work.stock.system.web.controller;
 
-import my.work.stock.system.domain.entity.PurchaseInfo;
 import my.work.stock.system.domain.entity.ReceiveInfo;
 import my.work.stock.system.domain.service.ReceiveInfoService;
 import my.work.stock.system.web.view.SearchReceiveInfo;
@@ -44,13 +43,12 @@ public class ReceiveInfoController {
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String save(@RequestBody ReceiveInfo receiveInfo) {
-        ReceiveInfo info = receiveInfoService.save(receiveInfo);
-        return "ok";
+        return receiveInfoService.save(receiveInfo);
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.POST)
-    public void delete(@RequestBody ReceiveInfo receiveInfo) {
-        receiveInfoService.delete(receiveInfo);
+    public String delete(@RequestBody ReceiveInfo receiveInfo) {
+        return receiveInfoService.delete(receiveInfo);
     }
 
     @RequestMapping(value = "search", method = RequestMethod.POST)

@@ -48,13 +48,12 @@ public class PurchaseInfoController {
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String save(@RequestBody PurchaseInfo purchaseInfo) {
-        PurchaseInfo info = purchaseInfoService.save(purchaseInfo);
-        return "ok";
+        return purchaseInfoService.save(purchaseInfo);
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.POST)
-    public void delete(@RequestBody PurchaseInfo purchaseInfo) {
-        purchaseInfoService.delete(purchaseInfo);
+    public String delete(@RequestBody PurchaseInfo purchaseInfo) {
+        return purchaseInfoService.delete(purchaseInfo);
     }
 
     @RequestMapping(value = "all", method = RequestMethod.POST)

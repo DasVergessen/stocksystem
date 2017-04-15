@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import java.util.List;
 public class PurchaseInfoService {
     @Autowired
     private PurchaseInfoRepository purchaseInfoRepository;
+    @Autowired
+    private ComputerMaterialsInfoService computerMaterialsInfoService;
 
     public Page<PurchaseInfo> searchPurchaseInfo(SearchPurchaseInfo searchPurchaseInfo) {
         Specification<PurchaseInfo> specification = getWhereClause(searchPurchaseInfo);
@@ -61,11 +64,68 @@ public class PurchaseInfoService {
         };
     }
 
-    public PurchaseInfo save(PurchaseInfo purchaseInfo) {
-        return purchaseInfoRepository.save(purchaseInfo);
+    @Transactional
+    public String save(PurchaseInfo purchaseInfo) {
+        Integer purchaseId = purchaseInfo.getPurchaseId();
+        if (purchaseId != null) {//修改
+            PurchaseInfo old = purchaseInfoRepository.findOne(purchaseId);
+            Integer oldQuantity = old.getPurchaseQuantity();
+            Integer computerMaterialsId = purchaseInfo.getComputerMaterialsInfo().getComputerMaterialsId();
+            Integer purchaseQuantity = purchaseInfo.getPurchaseQuantity();
+            if (computerMaterialsId != null) {
+                ComputerMaterialsInfo computerMaterialsInfo = computerMaterialsInfoService.findOne(computerMaterialsId);
+                if (computerMaterialsInfo != null && purchaseQuantity != null && oldQuantity != null) {
+                    Integer quantity = computerMaterialsInfo.getQuantity();
+                    if (quantity + purchaseQuantity - oldQuantity < 0) {
+                        return "库存不足以抵扣修改后的数量!";
+                    }
+                    computerMaterialsInfo.setQuantity(quantity + purchaseQuantity - oldQuantity);
+                    computerMaterialsInfoService.save(computerMaterialsInfo);
+                } else {
+                    return "入库库存为空或者找不到对应的耗材!";
+                }
+            }
+        } else {//新增
+            Integer computerMaterialsId = purchaseInfo.getComputerMaterialsInfo().getComputerMaterialsId();
+            Integer purchaseQuantity = purchaseInfo.getPurchaseQuantity();
+            if (computerMaterialsId != null) {
+                ComputerMaterialsInfo computerMaterialsInfo = computerMaterialsInfoService.findOne(computerMaterialsId);
+                if (computerMaterialsInfo != null && purchaseQuantity != null) {
+                    Integer quantity = computerMaterialsInfo.getQuantity();
+                    if (quantity == null) {
+                        quantity = 0;
+                    }
+                    computerMaterialsInfo.setQuantity(quantity + purchaseQuantity);
+                    computerMaterialsInfoService.save(computerMaterialsInfo);
+                } else {
+                    return "入库库存为空或者找不到对应的耗材!";
+                }
+            }
+        }
+        purchaseInfoRepository.save(purchaseInfo);
+        return "入库成功!";
     }
 
-    public void delete(PurchaseInfo purchaseInfo) {
+
+    @Transactional
+    public String delete(PurchaseInfo purchaseInfo) {
+        Integer computerMaterialsId = purchaseInfo.getComputerMaterialsInfo().getComputerMaterialsId();
+        Integer purchaseQuantity = purchaseInfo.getPurchaseQuantity();
+        if (computerMaterialsId != null) {
+            ComputerMaterialsInfo computerMaterialsInfo = computerMaterialsInfoService.findOne(computerMaterialsId);
+            if (computerMaterialsInfo != null && purchaseQuantity != null) {
+                Integer quantity = computerMaterialsInfo.getQuantity();
+                if (quantity != null && quantity - purchaseQuantity >= 0) {//删除入库记录,恢复库存
+                    computerMaterialsInfo.setQuantity(quantity - purchaseQuantity);
+                    computerMaterialsInfoService.save(computerMaterialsInfo);
+                } else {
+                    return "删除入库记录失败,库存不足!";
+                }
+            } else {
+                return "入库库存为空或者找不到对应的耗材!";
+            }
+        }
         purchaseInfoRepository.delete(purchaseInfo);
+        return "删除成功!";
     }
 }

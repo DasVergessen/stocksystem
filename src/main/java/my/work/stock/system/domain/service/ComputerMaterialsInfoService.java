@@ -62,4 +62,8 @@ public class ComputerMaterialsInfoService {
     public void delete(ComputerMaterialsInfo computerMaterialsInfo) {
         computerMaterialsInfoRepository.delete(computerMaterialsInfo);
     }
+
+    public ComputerMaterialsInfo findOne(Integer computerMaterialsId) {
+        return computerMaterialsInfoRepository.findOne(computerMaterialsId);
+    }
 }

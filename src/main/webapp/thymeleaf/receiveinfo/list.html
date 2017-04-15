@@ -73,9 +73,11 @@
                                     {{receiveInfo.memo}}
                                 </td>
                                 <td>
-                                    <button class="btn btn-info btn-sm" v-on:click="edit(receiveInfo)"><i class="fa fa-edit">
+                                    <button class="btn btn-info btn-sm" v-on:click="edit(receiveInfo)"><i
+                                            class="fa fa-edit">
                                         修改</i></button>
-                                    <button class="btn btn-info btn-sm" style="margin-right: 10px" v-on:click="remove(receiveInfo)">
+                                    <button class="btn btn-info btn-sm" style="margin-right: 10px"
+                                            v-on:click="remove(receiveInfo)">
                                         <i class="fa fa-remove"> 删除</i></button>
                                 </td>
                             </tr>
@@ -151,11 +153,12 @@
                                 <label for="computerMaterialsId" class="control-label">耗材编码:</label>
 
                                 <div class="input-group">
-                                    <input type="text" id="computerMaterialsId" class="form-control"
+                                    <input type="text" readonly id="computerMaterialsId" class="form-control"
                                            v-model="receiveInfo.computerMaterialsInfo.computerMaterialsId">
                                     <span class="input-group-btn">
-                                        <button type="button" class="btn btn-info btn-flat"><i
-                                                v-on:click="search" class="fa fa-search"> 查找</i></button>
+                                        <button type="button" v-on:click="search" class="btn btn-info btn-flat">
+                                            <i class="fa fa-search"> 查找</i>
+                                        </button>
                                     </span>
                                 </div>
                             </div>
@@ -320,6 +323,7 @@
 <script src="/js/AdminLTE.min.js"></script>
 <script src="/js/vue.min.js"></script>
 <script src="/js/vue-resource.min.js"></script>
+<script src="/js/bootstrap-notify.min.js"></script>
 
 <script>
     var list = new Vue({
@@ -348,6 +352,16 @@
             },
             remove: function (receiveInfo) {
                 Vue.http.post('/receiveInfo/delete', receiveInfo).then(function (reps) {
+                    return reps.text();
+                }).then(function (reps) {
+                    $.notify({
+                        message: reps
+                    }, {
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        }
+                    });
                     list.search();
                 });
             },
@@ -388,9 +402,17 @@
             },
             save: function () {
                 Vue.http.post('/receiveInfo/save', this.receiveInfo).then(function (reps) {
+                    return reps.text();
+                }).then(function (resp) {
+                    $.notify({
+                        message: resp
+                    }, {
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        }
+                    });
                     list.search();
-                }, function (error) {
-                    console.error(error);
                 });
                 $('#insertOrEdit').modal('hide');
             }

@@ -108,6 +108,7 @@
                                 <th>所属类别</th>
                                 <th>规格型号</th>
                                 <th>计量单位</th>
+                                <th>所剩库存</th>
                                 <th>操作</th>
                             </tr>
                             <tr v-for="computerMaterialsInfo in computerMaterialsInfos">
@@ -125,6 +126,9 @@
                                 </td>
                                 <td>
                                     {{computerMaterialsInfo.computerMaterialsUnit}}
+                                </td>
+                                <td>
+                                    {{computerMaterialsInfo.quantity}}
                                 </td>
                                 <td>
                                     <button class="btn btn-info btn-sm" v-on:click="edit(computerMaterialsInfo)">
@@ -284,7 +288,7 @@
                 $('#insertOrEdit').modal();
             },
             insert: function () {
-                insertOrEdit.computerMaterialsInfo = {computerMaterialsCategory: {}};//新增先new一个新的对象;
+                insertOrEdit.computerMaterialsInfo = {quantity: 0, computerMaterialsCategory: {}};//新增先new一个新的对象;
                 $('#insertOrEdit').modal();
             }
         }
