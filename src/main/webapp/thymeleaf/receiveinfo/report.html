@@ -74,8 +74,9 @@
                                 <input type="text" id="computerMaterialsId" class="form-control"
                                        v-model="searchReceiveInfo.computerMaterialsId">
                                     <span class="input-group-btn">
-                                        <button type="button" class="btn btn-info btn-flat"><i
-                                                v-on:click="findComputerMaterials" class="fa fa-search"> 查找</i></button>
+                                        <button type="button" v-on:click="findComputerMaterials" class="btn btn-info btn-flat">
+                                            <i class="fa fa-search"> 查找</i>
+                                        </button>
                                     </span>
                             </div>
                         </div>
