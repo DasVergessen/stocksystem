@@ -401,6 +401,30 @@
                 $('#search').modal();
             },
             save: function () {
+                if (!this.receiveInfo.receiveQuantity || this.receiveInfo.receiveQuantity <= 0) {
+                    $.notify({
+                        message: '出库库存不能小于等于0!'
+                    }, {
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        }
+                    });
+                    $('#insertOrEdit').modal('hide');
+                    return;
+                }
+                if (!this.receiveInfo.receivePrice || this.receiveInfo.receivePrice <= 0) {
+                    $.notify({
+                        message: '出库价格不能小于等于0!'
+                    }, {
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        }
+                    });
+                    $('#insertOrEdit').modal('hide');
+                    return;
+                }
                 Vue.http.post('/receiveInfo/save', this.receiveInfo).then(function (reps) {
                     return reps.text();
                 }).then(function (resp) {

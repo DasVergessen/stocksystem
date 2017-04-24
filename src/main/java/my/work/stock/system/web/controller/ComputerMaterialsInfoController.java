@@ -66,6 +66,8 @@ public class ComputerMaterialsInfoController {
         header.createCell(2).setCellValue("所属类别");
         header.createCell(3).setCellValue("规格型号");
         header.createCell(4).setCellValue("计量单位");
+        header.createCell(5).setCellValue("所剩库存");
+
 
         for (int i = 0; i < allComputerMaterialsInfo.size(); i++) {
             Row row = sheet.createRow(i + 1);
@@ -75,6 +77,7 @@ public class ComputerMaterialsInfoController {
             row.createCell(2).setCellValue(computerMaterialsInfo.getComputerMaterialsCategory().getCategoryName());
             row.createCell(3).setCellValue(computerMaterialsInfo.getComputerMaterialsSpecifications());
             row.createCell(4).setCellValue(computerMaterialsInfo.getComputerMaterialsUnit());
+            row.createCell(5).setCellValue(computerMaterialsInfo.getQuantity());
         }
 
         wb.write(response.getOutputStream());

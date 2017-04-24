@@ -399,6 +399,30 @@
                 $('#search').modal();
             },
             save: function () {
+                if (!this.purchaseInfo.purchaseQuantity || this.purchaseInfo.purchaseQuantity <= 0) {
+                    $.notify({
+                        message: '入库库存不能小于等于0!'
+                    }, {
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        }
+                    });
+                    $('#insertOrEdit').modal('hide');
+                    return;
+                }
+                if (!this.purchaseInfo.purchasePrice || this.purchaseInfo.purchasePrice <= 0) {
+                    $.notify({
+                        message: '入库价格不能小于等于0!'
+                    }, {
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        }
+                    });
+                    $('#insertOrEdit').modal('hide');
+                    return;
+                }
                 Vue.http.post('/purchaseInfo/save', this.purchaseInfo).then(function (reps) {
                     return reps.text();
                 }).then(function (resp) {
