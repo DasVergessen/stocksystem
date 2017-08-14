@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -55,10 +56,12 @@ public class ComputerMaterialsInfoService {
         };
     }
 
+    @Transactional
     public void save(ComputerMaterialsInfo computerMaterialsInfo) {
         computerMaterialsInfoRepository.save(computerMaterialsInfo);
     }
 
+    @Transactional
     public void delete(ComputerMaterialsInfo computerMaterialsInfo) {
         computerMaterialsInfoRepository.delete(computerMaterialsInfo);
     }

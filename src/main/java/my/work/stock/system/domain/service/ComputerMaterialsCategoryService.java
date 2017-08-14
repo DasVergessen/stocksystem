@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -43,10 +44,12 @@ public class ComputerMaterialsCategoryService {
         };
     }
 
+    @Transactional
     public void save(ComputerMaterialsCategory computerMaterialsCategory) {
         computerMaterialsCategoryRepository.save(computerMaterialsCategory);
     }
 
+    @Transactional
     public void delete(ComputerMaterialsCategory computerMaterialsCategory) {
         computerMaterialsCategoryRepository.delete(computerMaterialsCategory);
     }

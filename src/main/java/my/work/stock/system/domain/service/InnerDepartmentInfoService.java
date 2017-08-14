@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -53,10 +54,12 @@ public class InnerDepartmentInfoService {
         };
     }
 
+    @Transactional
     public void save(InnerDepartmentInfo innerDepartmentInfo) {
         innerDepartmentInfoRepository.save(innerDepartmentInfo);
     }
 
+    @Transactional
     public void delete(InnerDepartmentInfo innerDepartmentInfo) {
         innerDepartmentInfoRepository.delete(innerDepartmentInfo);
     }
