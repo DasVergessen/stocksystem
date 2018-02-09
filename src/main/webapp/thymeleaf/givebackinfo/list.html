@@ -1,0 +1,524 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>库存管理系统</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="/images/logo.png" rel="shortcut icon" type="image/png"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/AdminLTE.min.css">
+
+    <link rel="stylesheet" href="/css/skin-blue-light.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="/css/plugins/iCheck/flat/blue.css">
+    <!-- Date Picker -->
+    <link rel="stylesheet" href="/css/plugins/datepicker/datepicker3.css">
+</head>
+<body class="skin-blue-light fixed sidebar-mini">
+<div class="wrapper">
+    <div th:replace="header :: header"></div>
+    <div th:replace="menu :: menu('givebackinfo','list')"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                领用归还
+                <small>领用归还</small>
+            </h1>
+        </section>
+
+        <!-- Main content -->
+        <section id="list" class="content">
+            <div class="col-md-12">
+                <div class="box box-widget">
+                    <div class="box-header">
+                        <h3 class="box-title">领用归还</h3>
+
+                        <div class="box-tools">
+                            <div class="input-group">
+                                <button class="btn btn-info btn-sm pull-right" v-on:click="exportExcel"><i
+                                        class="fa fa-file-excel-o"> 导出</i></button>
+                                <button class="btn btn-info btn-sm" style="margin-right: 10px" v-on:click="insert"><i
+                                        class="fa fa-plus"> 新增</i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-striped table-hover">
+                            <tr>
+                                <th>归还单号</th>
+                                <th>归还日期</th>
+                                <th>归还部门</th>
+                                <th>归还人</th>
+                                <th>耗材名称</th>
+                                <th>类别</th>
+                                <th>数量</th>
+                                <th>备注</th>
+                                <th>操作</th>
+                            </tr>
+                            <tr v-for="givebackInfo in givebackInfos">
+                                <td>
+                                    GH{{givebackInfo.givebackId}}
+                                </td>
+                                <td>
+                                    {{givebackInfo.givebackDate}}
+                                </td>
+                                <td>
+                                    {{givebackInfo.innerDepartmentInfo.departmentName}}
+                                </td>
+                                <td>
+                                    {{givebackInfo.givebackPerson}}
+                                </td>
+                                <td>
+                                    {{givebackInfo.computerMaterialsInfo.computerMaterialsName}}
+                                </td>
+                                <td>
+                                    {{givebackInfo.computerMaterialsCategory.categoryName}}
+                                </td>
+                                <td>
+                                    {{givebackInfo.givebackQuantity}}
+                                </td>
+                                <td>
+                                    {{givebackInfo.memo}}
+                                </td>
+                                <td>
+                                    <button class="btn btn-info btn-sm" v-on:click="edit(givebackInfo)"><i
+                                            class="fa fa-edit">
+                                        修改</i></button>
+                                    <button class="btn btn-info btn-sm" style="margin-right: 10px"
+                                            v-on:click="remove(givebackInfo)">
+                                        <i class="fa fa-remove"> 删除</i></button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- /.content -->
+        <div id="pagination" class="row text-center">
+            <ul class="pagination-sm pagination">
+                <li v-bind:class="{disabled:first}"
+                    class="pagination-first ng-scope">
+                    <a href="#" @click="selectPage(0)" class="ng-binding">&lt;&lt;</a>
+                </li>
+                <li v-bind:class="{disabled:first}"
+                    class="pagination-prev ng-scope">
+                    <a href="#" @click="selectPage(number - 1)" class="ng-binding">&lt;</a>
+                </li>
+
+                <li v-for="pageNumber in totalPages"
+                    v-bind:class="{active:pageNumber==number+1}"
+                    class="pagination-page ng-scope">
+                    <a href="#" @click="selectPage(pageNumber-1)" class="ng-binding">{{pageNumber}}</a>
+                </li>
+
+                <li v-bind:class="{disabled:last}" class="pagination-next ng-scope">
+                    <a href="#" @click="selectPage(number + 1)" class="ng-binding">&gt;</a>
+                </li>
+
+                <li v-bind:class="{disabled:last}" class="pagination-last ng-scope">
+                    <a href="#" @click="selectPage(totalPages-1)" class="ng-binding">&gt;&gt;</a>
+                </li>
+
+            </ul>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="insertOrEdit" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 v-if="receiveInfo.receiveId" class="modal-title">修改出库</h4>
+                        <h4 v-else class="modal-title" id="myModalLabel">新增出库</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="col-xs-6 form-group">
+                                <label for="receiveDate" class="control-label">日期:</label>
+
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input data-date-format="yyyymmdd" type="text"
+                                           v-model="receiveInfo.receiveDate" class="form-control pull-right"
+                                           id="receiveDate">
+                                </div>
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label for="supplierId" class="control-label">部门名称:</label>
+                                <select id="supplierId" class="form-control"
+                                        v-model="receiveInfo.innerDepartmentInfo.departmentId">
+                                    <option value="">--</option>
+                                    <option v-for="innerDepartmentInfo in innerDepartmentInfos"
+                                            v-bind:value="innerDepartmentInfo.departmentId">
+                                        {{ innerDepartmentInfo.departmentName }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label for="computerMaterialsId" class="control-label">耗材编码:</label>
+
+                                <div class="input-group">
+                                    <input type="text" readonly id="computerMaterialsId" class="form-control"
+                                           v-model="receiveInfo.computerMaterialsInfo.computerMaterialsId">
+                                    <span class="input-group-btn">
+                                        <button type="button" v-on:click="search" class="btn btn-info btn-flat">
+                                            <i class="fa fa-search"> 查找</i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label for="categoryName" class="control-label">类别:</label>
+                                <input type="text" readonly id="categoryName" class="form-control"
+                                       v-model="receiveInfo.computerMaterialsCategory.categoryName">
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label for="receiveQuantity" class="control-label">数量:</label>
+                                <input type="text" id="receiveQuantity" class="form-control"
+                                       v-model="receiveInfo.receiveQuantity">
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label for="receivePriceString" class="control-label">单价:</label>
+                                <input type="text" id="receivePriceString" class="form-control"
+                                       v-model="receiveInfo.receivePriceString">
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label for="receiveTotalPrice" class="control-label">小计金额:</label>
+                                <input type="text" readonly id="receiveTotalPrice" class="form-control"
+                                       v-bind:value="receiveTotalPrice">
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label for="memo" class="control-label">备注:</label>
+                                <textarea id="memo" class="form-control" v-model="receiveInfo.memo"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" v-on:click="save" class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="search" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">搜索计算机耗材</h4>
+                    </div>
+                    <div class="modal-body" style="overflow: hidden">
+                        <form>
+                            <div class="col-xs-6 form-group">
+                                <label class="control-label">计算机耗材编码:</label>
+                                <input type="text" v-model="searchComputerMaterialsInfo.computerMaterialsId"
+                                       class="form-control"
+                                       placeholder="计算机耗材编码">
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label class="control-label">计算机耗材名称:</label>
+                                <input type="text" v-model="searchComputerMaterialsInfo.computerMaterialsName"
+                                       class="form-control"
+                                       placeholder="计算机耗材名称"/>
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label class="control-label">所属类别:</label>
+                                <select class="form-control" v-model="searchComputerMaterialsInfo.categoryId">
+                                    <option value="">--</option>
+                                    <option v-for="category in categories" v-bind:value="category.categoryId">
+                                        {{ category.categoryName }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label class="control-label">规格型号:</label>
+                                <input type="text"
+                                       v-model="searchComputerMaterialsInfo.computerMaterialsSpecifications"
+                                       class="form-control"
+                                       placeholder="规格型号"/>
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label class="control-label">计量单位:</label>
+                                <select v-model="searchComputerMaterialsInfo.computerMaterialsUnit"
+                                        class="form-control">
+                                    <option value="">--</option>
+                                    <option value="个">个</option>
+                                    <option value="件">件</option>
+                                    <option value="支">支</option>
+                                    <option value="台">台</option>
+                                    <option value="对">对</option>
+                                    <option value="箱">箱</option>
+                                    <option value="条">条</option>
+                                    <option value="根">根</option>
+                                    <option value="盒">盒</option>
+                                    <option value="块">块</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-6 form-group" style="margin-top: 25px">
+                                <button type="button" v-on:click="search" class="btn btn-success">
+                                    <i class="fa fa-search"> 查询</i>
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="col-md-12">
+                            <div class="table-responsive no-padding">
+                                <table class="table table-striped table-hover">
+                                    <tr>
+                                        <th>计算机耗材编码</th>
+                                        <th>计算机耗材名称</th>
+                                        <th>所属类别</th>
+                                        <th>规格型号</th>
+                                        <th>计量单位</th>
+                                    </tr>
+                                    <tr v-for="computerMaterialsInfo in computerMaterialsInfos">
+                                        <td>
+                                            <label>
+                                                <input v-model="computerMaterialsId" type="radio"
+                                                       name="computerMaterialsInfo"
+                                                       v-bind:value="computerMaterialsInfo.computerMaterialsId"
+                                                       class="minimal">
+                                                {{computerMaterialsInfo.computerMaterialsId}}
+                                            </label>
+                                        </td>
+                                        <td>
+                                            {{computerMaterialsInfo.computerMaterialsName}}
+                                        </td>
+                                        <td>
+                                            {{computerMaterialsInfo.computerMaterialsCategory.categoryName}}
+                                        </td>
+                                        <td>
+                                            {{computerMaterialsInfo.computerMaterialsSpecifications}}
+                                        </td>
+                                        <td>
+                                            {{computerMaterialsInfo.computerMaterialsUnit}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" v-on:click="close" class="btn btn-default">关闭</button>
+                        <button type="button" v-on:click="select" class="btn btn-primary">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="footer :: footer"></div>
+</div>
+
+<script src="/js/numeral.min.js"></script>
+<!-- jQuery 2.2.3 -->
+<script src="/js/jquery-2.2.3.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="/js/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+<!-- Bootstrap 3.3.6 -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- datepicker -->
+<script src="/js/bootstrap-datepicker.js"></script>
+<script src="/js/bootstrap-datepicker.zh-CN.js"></script>
+<!-- Slimscroll -->
+<script src="/js/jquery.slimscroll.min.js"></script>
+<!-- AdminLTE App -->
+<script src="/js/AdminLTE.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/vue-resource.min.js"></script>
+<script src="/js/bootstrap-notify.min.js"></script>
+
+<script>
+    var list = new Vue({
+        el: '#list',
+        data: {
+            searchGivebackInfos: {pageNumber: 0, pageSize: 10},
+            givebackInfos: []
+        },
+        methods: {
+            exportExcel: function () {
+                window.location = '/givebackInfo/export';
+            },
+            search: function () {
+                Vue.http.post('/givebackInfo/search', this.searchGivebackInfos).then(function (reps) {
+                    return reps.json();
+                }).then(function (resp) {
+                    list.givebackInfos = resp.content;
+                    pagination.first = resp.first;
+                    pagination.last = resp.last;
+                    pagination.totalPages = resp.totalPages;
+                    pagination.number = resp.number;
+                });
+            },
+            edit: function (givebackInfo) {
+                insertOrEdit.givebackInfo = givebackInfo;
+                $('#insertOrEdit').modal();
+            },
+            insert: function () {
+                insertOrEdit.givebackInfo = {
+                    receiveDate: '',
+                    receiveQuantity: 0,
+                    receivePriceString: 0,
+                    innerDepartmentInfo: {},
+                    computerMaterialsInfo: {},
+                    computerMaterialsCategory: {}
+                };//新增先new一个新的对象;
+                $('#insertOrEdit').modal();
+            }
+        }
+    });
+    var insertOrEdit = new Vue({
+        el: '#insertOrEdit',
+        data: {
+            receiveInfo: {
+                receiveDate: '',
+                receiveQuantity: 0,
+                receivePriceString: 0,
+                innerDepartmentInfo: {},
+                computerMaterialsInfo: {},
+                computerMaterialsCategory: {}
+            },
+            innerDepartmentInfos: []
+        },
+        methods: {
+            search: function () {
+                $('#search').modal();
+            },
+            save: function () {
+                if (!this.receiveInfo.receiveQuantity || this.receiveInfo.receiveQuantity <= 0) {
+                    $.notify({
+                        message: '出库库存不能小于等于0!'
+                    }, {
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        }
+                    });
+                    $('#insertOrEdit').modal('hide');
+                    return;
+                }
+                if (!this.receiveInfo.receivePrice || this.receiveInfo.receivePrice <= 0) {
+                    $.notify({
+                        message: '出库价格不能小于等于0!'
+                    }, {
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        }
+                    });
+                    $('#insertOrEdit').modal('hide');
+                    return;
+                }
+                Vue.http.post('/receiveInfo/save', this.receiveInfo).then(function (reps) {
+                    return reps.text();
+                }).then(function (resp) {
+                    $.notify({
+                        message: resp
+                    }, {
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        }
+                    });
+                    list.search();
+                });
+                $('#insertOrEdit').modal('hide');
+            }
+        },
+        computed: {
+            receiveTotalPrice: function () {
+                return numeral(this.receiveInfo.receiveQuantity).multiply(this.receiveInfo.receivePriceString).format('0.00');
+            }
+        },
+        watch: {
+            'receiveInfo.receivePriceString': function (val, oldVal) {
+                if (val) {
+                    this.receiveInfo.receivePrice = val * 100;
+                }
+            }
+        },
+        mounted: function () {//fix datepicker bug
+            $('#receiveDate').datepicker({
+                autoclose: true,
+                todayBtn: true,
+                todayHighlight: true,
+                language: 'zh-CN'
+            }).on('changeDate', function () {
+                        insertOrEdit.receiveInfo.receiveDate = $('#receiveDate').val();
+                    }
+            );
+        }
+    });
+    var search = new Vue({
+        el: '#search',
+        data: {
+            searchComputerMaterialsInfo: {pageNumber: 0, pageSize: 10000},
+            computerMaterialsInfos: [],
+            categories: [],
+            computerMaterialsId: null
+        },
+        methods: {
+            close: function () {
+                $('#search').modal('hide');
+            },
+            search: function () {
+                Vue.http.post('/computerMaterialsInfo/search', this.searchComputerMaterialsInfo).then(function (reps) {
+                    return reps.json();
+                }).then(function (resp) {
+                    search.computerMaterialsInfos = resp.content;
+                });
+            },
+            select: function () {
+                insertOrEdit.receiveInfo.computerMaterialsInfo.computerMaterialsId = this.computerMaterialsId;
+                for (var i = 0; i < this.computerMaterialsInfos.length; i++) {
+                    if (this.computerMaterialsId == this.computerMaterialsInfos[i].computerMaterialsId) {
+                        insertOrEdit.receiveInfo.computerMaterialsCategory = this.computerMaterialsInfos[i].computerMaterialsCategory;
+                        break;
+                    }
+                }
+                $('#search').modal('hide');
+            }
+        }
+    });
+    list.search();
+    Vue.http.get('/innerDepartmentInfo/all').then(function (reps) {
+        return reps.json();
+    }).then(function (resp) {
+        insertOrEdit.innerDepartmentInfos = resp;
+    });
+    Vue.http.get('/computerMaterialsCategory/all').then(function (reps) {
+        return reps.json();
+    }).then(function (resp) {
+        search.categories = resp;
+    });
+    var pagination = new Vue({
+        el: '#pagination',
+        data: {
+            first: true,
+            last: true,
+            totalPages: 1,
+            number: 0
+        },
+        methods: {
+            selectPage: function (pageNumber) {
+                if (pageNumber < 0 || pageNumber >= this.totalPages) {
+                    return;
+                }
+                list.searchReceiveInfos.pageNumber = pageNumber;
+                list.search();
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

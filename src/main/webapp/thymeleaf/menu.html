@@ -63,6 +63,22 @@
                         </li>
                     </ul>
                 </li>
+                <li th:class="${first}=='givebackinfo'?'active treeview':'treeview'">
+                    <a href="#">
+                        <i class="glyphicon glyphicon-log-out"></i><span>领用归还</span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li th:class="${second}=='list'?'active':''">
+                            <a href="/givebackInfo/list"><i class="fa fa-circle-o"> 领用归还</i></a>
+                        </li>
+                        <li th:class="${second}=='report'?'active':''">
+                            <a href="/givebackInfo/report"><i class="fa fa-circle-o"> 归还统计</i></a>
+                        </li>
+                    </ul>
+                </li>
                 <li th:class="${first}=='system'?'active treeview':'treeview'">
                     <a href="#">
                         <i class="glyphicon glyphicon-cog"></i> <span>系统管理</span>

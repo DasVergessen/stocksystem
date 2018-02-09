@@ -7,6 +7,8 @@ import my.work.stock.system.domain.entity.ReceiveInfo;
 import my.work.stock.system.domain.repository.ReceiveInfoRepository;
 import my.work.stock.system.web.view.SearchReceiveInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,11 +18,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class ReceiveInfoService {
+    private static final Logger logger = LoggerFactory.getLogger(ReceiveInfoService.class);
+
     @Autowired
     private ReceiveInfoRepository receiveInfoRepository;
     @Autowired
@@ -67,11 +74,20 @@ public class ReceiveInfoService {
     @Transactional
     public String save(ReceiveInfo receiveInfo) {
         Integer receiveId = receiveInfo.getReceiveId();
+        ComputerMaterialsInfo computerMaterialsInfo1 = receiveInfo.getComputerMaterialsInfo();
+        InnerDepartmentInfo innerDepartmentInfo = receiveInfo.getInnerDepartmentInfo();
+        if (computerMaterialsInfo1 == null || innerDepartmentInfo == null) {
+            return "未选择耗材或领用部门!";
+        }
+        Integer receiveQuantity = receiveInfo.getReceiveQuantity();
+        Integer used = sumSameMaterialsAndDepartmentAtCurrentMonth(computerMaterialsInfo1.getComputerMaterialsId(), innerDepartmentInfo.getDepartmentId());
+        if (receiveQuantity + used > 4) {
+            return "超过领用上限!";
+        }
         if (receiveId != null) {
             ReceiveInfo old = receiveInfoRepository.findOne(receiveId);
             Integer oldQuantity = old.getReceiveQuantity();
             Integer computerMaterialsId = receiveInfo.getComputerMaterialsInfo().getComputerMaterialsId();
-            Integer receiveQuantity = receiveInfo.getReceiveQuantity();
             if (computerMaterialsId != null) {
                 ComputerMaterialsInfo computerMaterialsInfo = computerMaterialsInfoService.findOne(computerMaterialsId);
                 if (computerMaterialsInfo != null && receiveQuantity != null && oldQuantity != null) {
@@ -88,7 +104,6 @@ public class ReceiveInfoService {
             }
         } else {
             Integer computerMaterialsId = receiveInfo.getComputerMaterialsInfo().getComputerMaterialsId();
-            Integer receiveQuantity = receiveInfo.getReceiveQuantity();
             if (computerMaterialsId != null) {
                 ComputerMaterialsInfo computerMaterialsInfo = computerMaterialsInfoService.findOne(computerMaterialsId);
                 if (computerMaterialsInfo != null && receiveQuantity != null) {
@@ -106,6 +121,20 @@ public class ReceiveInfoService {
         }
         receiveInfoRepository.save(receiveInfo);
         return "保存成功!";
+    }
+
+    private Integer sumSameMaterialsAndDepartmentAtCurrentMonth(Integer materialsId, Integer departmentId) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM");
+        String month = simpleDateFormat.format(new Date());
+        try {
+            Object[] objects = receiveInfoRepository.sumSameMaterialsAndDepartmentAtCurrentMonth(materialsId, departmentId, month);
+            Object object = objects[0];
+            BigDecimal bigDecimal = (BigDecimal) object;
+            return bigDecimal.intValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     @Transactional
