@@ -4,11 +4,9 @@ import java.io.Serializable;
 
 public class SearchGivebackInfo extends PageBase implements Serializable {
     private String givebackDate;
-
     private Integer departmentId;
     private String givebackPerson;
     private Integer computerMaterialsId;
-
     private Integer categoryId;
 
     public String getGivebackDate() {

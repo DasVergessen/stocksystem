@@ -24,8 +24,6 @@ public class GivebackInfoService {
 
     @Autowired
     private GivebackInfoRepository givebackInfoRepository;
-    @Autowired
-    private ComputerMaterialsInfoService computerMaterialsInfoService;
 
     public Page<GivebackInfo> searchGivebackInfo(SearchGivebackInfo searchGivebackInfo) {
         Specification<GivebackInfo> specification = getWhereClause(searchGivebackInfo);
@@ -72,5 +70,11 @@ public class GivebackInfoService {
     public String save(GivebackInfo givebackInfo) {
         givebackInfoRepository.save(givebackInfo);
         return "保存成功!";
+    }
+
+    @Transactional
+    public String delete(GivebackInfo givebackInfo) {
+        givebackInfoRepository.delete(givebackInfo);
+        return "删除成功!";
     }
 }

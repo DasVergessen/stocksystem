@@ -47,6 +47,11 @@ public class GivebackInfoController {
         return givebackInfoService.save(givebackInfo);
     }
 
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    public String delete(@RequestBody GivebackInfo givebackInfo) {
+        return givebackInfoService.delete(givebackInfo);
+    }
+
     @RequestMapping(value = "search", method = RequestMethod.POST)
     public Page<GivebackInfo> page(@RequestBody SearchGivebackInfo searchGivebackInfo) {
         return givebackInfoService.searchGivebackInfo(searchGivebackInfo);
