@@ -28,6 +28,11 @@ public class ComputerMaterialsInfoService {
         return computerMaterialsInfoRepository.findAll(specification, pageable);
     }
 
+    public List<ComputerMaterialsInfo> searchComputerMaterialsInfoAll(SearchComputerMaterialsInfo searchComputerMaterialsInfo) {
+        Specification<ComputerMaterialsInfo> specification = getWhereClause(searchComputerMaterialsInfo);
+        return computerMaterialsInfoRepository.findAll(specification);
+    }
+
     public List<ComputerMaterialsInfo> findAllComputerMaterialsInfo() {
         return (List<ComputerMaterialsInfo>) computerMaterialsInfoRepository.findAll();
     }
@@ -69,4 +74,5 @@ public class ComputerMaterialsInfoService {
     public ComputerMaterialsInfo findOne(Integer computerMaterialsId) {
         return computerMaterialsInfoRepository.findOne(computerMaterialsId);
     }
+
 }

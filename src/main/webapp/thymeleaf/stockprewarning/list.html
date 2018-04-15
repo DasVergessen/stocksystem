@@ -1,0 +1,252 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>库存管理系统</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="/images/logo.png" rel="shortcut icon" type="image/png"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/AdminLTE.min.css">
+
+    <link rel="stylesheet" href="/css/skin-blue-light.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="/css/plugins/iCheck/flat/blue.css">
+    <!-- Date Picker -->
+    <link rel="stylesheet" href="/css/plugins/datepicker/datepicker3.css">
+</head>
+<body class="skin-blue-light fixed sidebar-mini">
+<div class="wrapper">
+    <div th:replace="header :: header"></div>
+    <div th:replace="menu :: menu('stockprewarning','list')"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                库存预警
+                <small>库存预警</small>
+            </h1>
+        </section>
+
+        <!-- Main content -->
+        <section id="list" class="content">
+            <div class="col-md-12">
+                <div class="box box-widget">
+                    <div class="box-header">
+                        <h3 class="box-title">库存预警</h3>
+
+                        <div class="box-tools">
+                            <div class="input-group">
+                                <button class="btn btn-info btn-sm" style="margin-right: 10px" v-on:click="insert"><i
+                                        class="fa fa-plus"> 预警阀值设定</i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-striped table-hover">
+                            <tr>
+                                <th>耗材类别</th>
+                                <th>阀值</th>
+                                <th>是否预警</th>
+                                <th>操作</th>
+                            </tr>
+                            <tr v-for="stockprewarningview in stockprewarningviews">
+                                <td>
+                                    {{stockprewarningview.categoryName}}
+                                </td>
+                                <td>
+                                    {{stockprewarningview.prewarningStock}}
+                                </td>
+                                <td>
+                                    {{stockprewarningview.warning?'是':'否'}}
+                                </td>
+                                <td>
+                                    <button class="btn btn-info btn-sm" v-on:click="edit(stockprewarningview)"><i
+                                            class="fa fa-edit">
+                                        修改</i></button>
+                                    <button class="btn btn-info btn-sm" style="margin-right: 10px"
+                                            v-on:click="remove(stockprewarningview)">
+                                        <i class="fa fa-remove"> 删除</i></button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- /.content -->
+
+        <!-- Modal -->
+        <div class="modal fade" id="insertOrEdit" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 v-if="stockprewarning.categoryId" class="modal-title">修改归还入库</h4>
+                        <h4 v-else class="modal-title" id="myModalLabel">新增归还入库</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="col-xs-6 form-group">
+                                <label for="categoryId" class="control-label">耗材类别:</label>
+                                <select id="categoryId" class="form-control"
+                                        v-model="stockprewarning.categoryId">
+                                    <option v-for="category in categories"
+                                            v-bind:value="category.categoryId">
+                                        {{ category.categoryName }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label for="prewarningStock" class="control-label">预警阀值:</label>
+                                <input type="text" id="prewarningStock" class="form-control"
+                                       v-model="stockprewarning.prewarningStock">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" v-on:click="save" class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="footer :: footer"></div>
+</div>
+
+<script src="/js/numeral.min.js"></script>
+<!-- jQuery 2.2.3 -->
+<script src="/js/jquery-2.2.3.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="/js/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+<!-- Bootstrap 3.3.6 -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- datepicker -->
+<script src="/js/bootstrap-datepicker.js"></script>
+<script src="/js/bootstrap-datepicker.zh-CN.js"></script>
+<!-- Slimscroll -->
+<script src="/js/jquery.slimscroll.min.js"></script>
+<!-- AdminLTE App -->
+<script src="/js/AdminLTE.min.js"></script>
+<script src="/js/vue.min.js"></script>
+<script src="/js/vue-resource.min.js"></script>
+<script src="/js/bootstrap-notify.min.js"></script>
+
+<script>
+    var list = new Vue({
+        el: '#list',
+        data: {
+            stockprewarningviews: []
+        },
+        methods: {
+            all: function () {
+                Vue.http.post('/stockprewarning/all').then(function (reps) {
+                    return reps.json();
+                }).then(function (resp) {
+                    list.stockprewarningviews = resp;
+                });
+            },
+            edit: function (stockprewarningview) {
+                insertOrEdit.stockprewarning = {
+                    categoryId: stockprewarningview.categoryId,
+                    prewarningStock: stockprewarningview.prewarningStock
+                };
+                $('#insertOrEdit').modal();
+            },
+            remove: function (stockprewarningview) {
+                Vue.http.post('/stockprewarning/delete', stockprewarningview.categoryId).then(function (reps) {
+                    return reps.text();
+                }).then(function (reps) {
+                    $.notify({
+                        message: reps
+                    }, {
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        }
+                    });
+                    list.all();
+                });
+            },
+            insert: function () {
+                insertOrEdit.stockprewarning = {
+                    categoryId: null,
+                    prewarningStock: 0
+                };//新增先new一个新的对象;
+                $('#insertOrEdit').modal();
+            }
+        }
+    });
+    var insertOrEdit = new Vue({
+        el: '#insertOrEdit',
+        data: {
+            stockprewarning: {
+                categoryId: null,
+                prewarningStock: 0
+            },
+            categories: []
+        },
+        methods: {
+            save: function () {
+                if (!this.stockprewarning.prewarningStock || this.stockprewarning.prewarningStock <= 0) {
+                    $.notify({
+                        message: '预警阀值不能小于等于0!'
+                    }, {
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        }
+                    });
+                    $('#insertOrEdit').modal('hide');
+                    return;
+                }
+                if (!this.stockprewarning.categoryId) {
+                    $.notify({
+                        message: '耗材类别不能为空!'
+                    }, {
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        }
+                    });
+                    $('#insertOrEdit').modal('hide');
+                    return;
+                }
+                Vue.http.post('/stockprewarning/save', this.stockprewarning).then(function (reps) {
+                    return reps.text();
+                }).then(function (resp) {
+                    $.notify({
+                        message: resp
+                    }, {
+                        placement: {
+                            from: "top",
+                            align: "center"
+                        }
+                    });
+                    list.all();
+                });
+                $('#insertOrEdit').modal('hide');
+            }
+        }
+    });
+
+    list.all();
+
+    Vue.http.get('/computerMaterialsCategory/all').then(function (reps) {
+        return reps.json();
+    }).then(function (resp) {
+        insertOrEdit.categories = resp;
+    });
+
+</script>
+
+</body>
+</html>

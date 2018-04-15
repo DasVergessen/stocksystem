@@ -53,4 +53,8 @@ public class ComputerMaterialsCategoryService {
     public void delete(ComputerMaterialsCategory computerMaterialsCategory) {
         computerMaterialsCategoryRepository.delete(computerMaterialsCategory);
     }
+
+    public ComputerMaterialsCategory findOne(Integer categoryId) {
+        return computerMaterialsCategoryRepository.findOne(categoryId);
+    }
 }
