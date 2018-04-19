@@ -162,19 +162,25 @@
                 $('#insertOrEdit').modal();
             },
             remove: function (stockprewarningview) {
-                Vue.http.post('/stockprewarning/delete', stockprewarningview.categoryId).then(function (reps) {
-                    return reps.text();
-                }).then(function (reps) {
-                    $.notify({
-                        message: reps
-                    }, {
-                        placement: {
-                            from: "top",
-                            align: "center"
-                        }
-                    });
-                    list.all();
-                });
+                Vue.http.post('/stockprewarning/delete',
+                        {
+                            categoryId: stockprewarningview.categoryId
+                        },
+                        {
+                            emulateJSON: true
+                        }).then(function (reps) {
+                            return reps.text();
+                        }).then(function (reps) {
+                            $.notify({
+                                message: reps
+                            }, {
+                                placement: {
+                                    from: "top",
+                                    align: "center"
+                                }
+                            });
+                            list.all();
+                        });
             },
             insert: function () {
                 insertOrEdit.stockprewarning = {

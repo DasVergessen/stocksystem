@@ -5,6 +5,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import my.work.stock.system.Application;
 import my.work.stock.system.domain.entity.ComputerMaterialsInfo;
 import my.work.stock.system.web.view.SearchComputerMaterialsInfo;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class ComputerMaterialsInfoServiceTest {
     @Autowired
     private ComputerMaterialsInfoService computerMaterialsInfoService;
 
+    @Ignore
     @Test
     public void testSearchComputerMaterialsInfo() throws Exception {
         SearchComputerMaterialsInfo search = new SearchComputerMaterialsInfo();
